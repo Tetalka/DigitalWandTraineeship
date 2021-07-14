@@ -1,0 +1,25 @@
+.navbar {
+    height: 55px;
+    color: floralwhite;
+}
+.navbutton {
+    cursor: pointer;
+}
+.navbutton:hover {
+    text-shadow: 0 0 1px white;
+}
+.login-regis-modal .form {
+    display: none;
+}
+.login-regis-modal .active-form {
+    display: block;
+}
+.form label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+.form label input {
+    margin-top: 0.25rem;
+}
