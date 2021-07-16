@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <title>DigitalWand Laravel</title>
@@ -26,10 +27,19 @@
             <label>Логин<input class='form-control' name='login'></label>
             <label>Пароль<input  type="password" class='form-control' name='password'></label>
         </form>
-        <form class="form regis-form">
-            <label>Логин<input class='form-control' name='login'></label>
-            <label>Пароль<input type="password" class='form-control' name='password'></label>
-            <label>Подтвердите пароль<input type="password" class='form-control' name='password-verify'></label>
+        <form class="form regis-form" action='{{ route("registration.create") }}' method ='POST'>
+            <label>Имя<input class='form-control' name='name' value='{{ old("name") }}'>
+              <span class='text-danger'>@error('name') {{ $message }} @enderror</span>
+            </label>
+            <label>Почта<input class='form-control' name='email' value='{{ old("email") }}'>
+            <span class='text-danger'>@error('email') {{ $message }} @enderror</span>
+            </label>
+            <label>Пароль<input type="password" class='form-control' name='password' value='{{ old("password") }}'>
+            <span class='text-danger'>@error('password') {{ $message }} @enderror</span>
+            </label>
+            <label>Подтвердите пароль<input type="password" class='form-control' name='password-verify' value='{{ old("password-verify") }}'>
+            <span class='text-danger'>@error('password-verify') {{ $message }} @enderror</span>
+            </label>
         </form>
       </div>
       <div class="modal-footer">

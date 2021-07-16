@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthorizationController;
+use App\Http\Controllers\RegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +22,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function() {
     return view('main');
 });
+
+Route::post('auth', [AuthorizationController::class, 'do'])->name('authorization.do');
+Route::post('create', [RegistrationController::class, 'create'])->name('registration.create');
