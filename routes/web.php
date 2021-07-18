@@ -24,4 +24,5 @@ Route::get('/', function() {
 });
 
 Route::post('auth', [AuthorizationController::class, 'do'])->name('authorization.do');
+Route::get('exit', [AuthorizationController::class, 'exit']);
 Route::post('create', [RegistrationController::class, 'create'])->name('registration.create');

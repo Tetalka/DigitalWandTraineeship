@@ -10,9 +10,18 @@
 </head>
 <body>
 <div class="navbar navbar-dark bg-dark px-3 mb-3">
-    <div class='float-right d-flex ms-auto'>
-        <div class='me-3 navbutton login' data-bs-toggle="modal" data-bs-target=".login-regis-modal">Войти</div>
-        <div class='navbutton regis' data-bs-toggle="modal" data-bs-target=".login-regis-modal">Регистрация</div>
+    <div class='float-right d-flex ms-auto position-relative'>
+      <?php
+      if (isset($_COOKIE['login'])) echo "<div class='dropdown-toggle text-truncate navbutton user' data-bs-toggle='dropdown' aria-expanded='false' id='userMenuButton'>{$_COOKIE['login']}</div>
+      <ul class='dropdown-menu' aria-labelledby='userMenuButton'>
+				<li class='dropdown-item exitButton'>Exit</li>
+			</ul>
+      ";
+      else echo "
+        <div class='me-3 navbutton login' data-bs-toggle='modal' data-bs-target='.login-regis-modal'>Войти</div>
+        <div class='navbutton regis' data-bs-toggle='modal' data-bs-target='.login-regis-modal'>Регистрация</div>
+        ";
+      ?>
     </div>
 </div>
 <div class="modal fade login-regis-modal" tabindex="-1" aria-labelledby="login-regis-modalLabel" aria-hidden="true">

@@ -2,11 +2,14 @@
     height: 55px;
     color: floralwhite;
 }
-.navbutton {
+.navbutton, .dropdown-item {
     cursor: pointer;
 }
 .navbutton:hover {
     text-shadow: 0 0 1px white;
+}
+.user {
+    max-width: 150px;
 }
 .login-regis-modal .form {
     display: none;
