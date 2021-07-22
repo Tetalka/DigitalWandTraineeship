@@ -97,7 +97,8 @@ window.addEventListener('load', function() {
     }
 
     document.querySelector('.navbar .exitButton')?.addEventListener('click', async function() {
-        await fetch('/exit');
-        window.location.reload();
+        if(await fetch('/exit')) {
+            window.location.reload();
+        }
     })
 });

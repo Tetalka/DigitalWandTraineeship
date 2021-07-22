@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\RegistrationController;
 
+use App\Models\News;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,7 +22,8 @@ use App\Http\Controllers\RegistrationController;
 });*/
 
 Route::get('/', function() {
-    return view('main');
+    $news = News::get();
+    return view('main', compact('news'));
 });
 
 Route::post('auth', [AuthorizationController::class, 'do'])->name('authorization.do');

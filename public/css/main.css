@@ -26,3 +26,45 @@
 .form label input {
     margin-top: 0.25rem;
 }
+
+.text-truncate {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+    white-space: normal;
+}
+
+.new {
+    padding: 1.25rem 0;
+}
+    .new .row {
+        margin: 0;
+    }
+    .new .img-fluid {
+        width: 100%;
+        height: 100%;
+    }
+.new__head {
+    margin-bottom: 1.25rem;
+}
+.new__title {
+    -webkit-line-clamp: 2;
+}
+.new__title-comment {
+    -webkit-line-clamp: 1;
+}
+.new__content {
+
+}
+
+.new__image-wrap {
+    width: 100%;
+    height: 360px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 1rem;
+    position: relative;
+}
+.new__text {
+    -webkit-line-clamp: 7;
+}

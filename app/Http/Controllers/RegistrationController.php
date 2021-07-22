@@ -9,7 +9,7 @@ use App\Models\User;
 
 class RegistrationController extends Controller
 {
-    function create(Request $request) {
+    public function create(Request $request) {
         if ($request->cookie('login')) return abort(400);
         $validator = Validator::make($request->all(), [
             'name'=>'required',
