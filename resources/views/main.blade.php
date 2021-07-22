@@ -11,11 +11,16 @@
                         <div class='new__head'>
                             <div class='new__title-wrap'><h3 class='new__title text-truncate'>{{ $new->title }}</h3></div>
                             <div class='new__title-comment-wrap text-muted'><strong class='new__title-comment text-truncate'>{{ $new->titleComment }}</strong></div>
-                        </div>
-                        <div class='float-right new__category text-muted text-truncate'>
-                        <!--foreach ($news->categories as $category)
-                            $category
-                        endforeach-->
+                            <div class='float-right new__categories text-muted text-truncate'>
+                            @foreach ($new->categories as $category)
+                                <div class='badge new__category' style='
+                                    background-color: {{ $category->background_color }};
+                                    color: {{ $category->font_color}};
+                                '>
+                                    {{ $category->name }}
+                                </div>
+                            @endforeach
+                            </div>
                         </div>
                     </div>
                     <div class='new__content'>

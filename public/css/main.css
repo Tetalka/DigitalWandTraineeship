@@ -30,7 +30,6 @@
 .text-truncate {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    box-orient: vertical;
     white-space: normal;
 }
 
@@ -53,8 +52,18 @@
 .new__title-comment {
     -webkit-line-clamp: 1;
 }
+.new__title-comment-wrap {
+    margin-bottom: 1rem;
+}
 .new__content {
-
+    
+}
+.new__categories {
+    white-space: nowrap;
+}
+.new__category {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.7rem;
 }
 
 .new__image-wrap {

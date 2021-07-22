@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\RegistrationController;
-
+use Illuminate\Support\Collection;
 use App\Models\News;
 
 /*
