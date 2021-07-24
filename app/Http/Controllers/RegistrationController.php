@@ -20,21 +20,26 @@ class RegistrationController extends Controller
             'password-verify.same'=>'Пароли не совпадают'
         ]);
 
-        if ($validator->passes()) {
-            $user = new User;
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = Hash::make($request->password);
-            $user->created_at = now(); //date('d-m-Y H:i:s');
-
-            //$user::create();
-            
-            $save = $user->save();
-            if ($save) return response(['data'=>['Регистрация прошла успешно']]);
-            else return response(['errors'=>['Вас не удалось зарегистрировать']], 500);
-        }
-        else {
+        if (!$validator->passes()) {
             return response(['errors'=>$validator->errors()->toArray()], 400);
         }
+
+
+
+        $user = new User;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->created_at = now(); //date('d-m-Y H:i:s');
+
+        if($request->role) {
+            $user->role = $request->role;
+        }
+        
+        $save = $user->save();
+        if ($save) {
+            return response(['data'=>['Регистрация прошла успешно']]);
+        }
+        return response(['errors'=>['Вас не удалось зарегистрировать']], 500);
     }
 }

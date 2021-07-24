@@ -18,7 +18,7 @@ use Carbon\Carbon;
 <div class="navbar navbar-dark bg-dark px-3 mb-3">
     <div class='float-right d-flex ms-auto position-relative'>
       <?php
-      $logined = UserCookies::where('crypt', '=', Cookie::get('login'))->where('expire', '>', Carbon::now())->first();
+      //$logined = UserCookies::where('crypt', '=', Cookie::get('login'))->where('expire', '>', Carbon::now())->first();
       if ($logined) {
         $login = Crypt::decryptString($logined->crypt);
         echo "<div class='dropdown-toggle text-truncate navbutton user' data-bs-toggle='dropdown' aria-expanded='false' id='userMenuButton'>{$login}</div>

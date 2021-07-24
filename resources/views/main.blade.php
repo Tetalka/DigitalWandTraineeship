@@ -2,17 +2,24 @@
 
 @section('content')
 <div class='container-sm'>
-    <h1 class='mb-4'>Новости</h1>
+    <?php 
+        if ($logined && $user && $user->hasRole('Admin')) {
+            echo "<h1 class='mb-2 d-flex justify-content-center'>Новости<div class='btn-news-add'></h1>";
+        }
+        else {
+            echo "<h1 class='mb-2 text-center'>Новости</h1>";
+        }
+    ?>
     <div class='row'>
-        @foreach ($news as $new)
+        @foreach ($news as $news_item)
             <div class=' col-12 col-md-6 p-3 mb-3'>
-                <div class='card new shadow-sm'>
-                    <div class='new__head no-wrap'>
-                        <div class='new__title-wrap'><h3 class='new__title text-truncate'>{{ $new->title }}</h3></div>
-                        <div class='new__title-comment-wrap text-muted'><strong class='new__title-comment text-truncate'>{{ $new->titleComment }}</strong></div>
-                        <div class='float-right new__categories text-muted text-truncate'>
-                        @foreach ($new->categories as $category)
-                            <div class='badge new__category' style='
+                <div class='card news-item shadow-sm'>
+                    <div class='news-item__head no-wrap'>
+                        <div class='news-item__title-wrap'><h3 class='news-item__title text-truncate'>{{ $news_item->title }}</h3></div>
+                        <div class='news-item__title-comment-wrap text-muted'><strong class='news-item__title-comment text-truncate'>{{ $news_item->titleComment }}</strong></div>
+                        <div class='float-right news-item__categories text-muted text-truncate'>
+                        @foreach ($news_item->categories as $category)
+                            <div class='badge news-item__category' style='
                                 background-color: {{ $category->background_color }};
                                 color: {{ $category->font_color}};
                             '>
@@ -21,12 +28,12 @@
                         @endforeach
                         </div>
                     </div>
-                    <div class='new__content'>
-                        <div class='new__image-wrap'>
-                            <img src='images/{{ $new->image }}' class='img-fluid'>
+                    <div class='news-item__content'>
+                        <div class='news-item__image-wrap'>
+                            <img src='images/{{ $news_item->image }}' class='img-fluid'>
                         </div>
-                        <div class='w-100 new__text text-truncate'>
-                            {{ $new->description }}
+                        <div class='w-100 news-item__text text-truncate'>
+                            {{ $news_item->description }}
                         </div>
                     </div>
                 </div>

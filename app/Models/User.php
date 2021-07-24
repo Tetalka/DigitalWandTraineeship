@@ -45,4 +45,33 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /*
+    * Get all roles of user
+    *
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function roles() {
+
+        return $this->belongsToMany(Role::class, 'users_roles', 'user', 'role');
+
+    }
+
+    /*
+    * Check if user has a specific role
+    *
+    * @return bool
+    */
+    public function hasRole($name)
+    {
+        foreach ($this->roles()->get() as $role)
+        {
+            if ($role->role == $name)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

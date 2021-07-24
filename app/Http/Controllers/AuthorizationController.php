@@ -28,7 +28,7 @@ class AuthorizationController extends Controller
             return response(['errors'=>$validator->errors()->toArray()], 400);
         }
 
-        $user = User::where('email', '=', $request->login)->first();
+        $user = User::where('email', '=', $request->login)->orWhere('name', '=', $request->login)->first();
         if (!$user) {
             return response(['errors'=>'Неправильный логин или пароль'], 400);
         }

@@ -1,10 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use App\Models\News;
+use App\Models\UserCookies;
 use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\RegistrationController;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use App\Models\News;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +28,12 @@ use App\Models\News;
 
 Route::get('/', function() {
     $news = News::get();
-    return view('main', compact('news'));
+    $logined = UserCookies::where('crypt', '=', Cookie::get('login'))->where('expire', '>', Carbon::now())->first();
+    $user = null;
+    if ($logined) {
+        $user = User::find($logined->userId);
+    }
+    return view('main', compact('news', 'logined', 'user'));
 });
 
 Route::post('auth', [AuthorizationController::class, 'do'])->name('authorization.do');

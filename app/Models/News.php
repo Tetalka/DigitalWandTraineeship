@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class News extends Model
 {
     /*
-    * Get all of the categories for the NewsController
+    * Get all categories of a news item
     *
     * @return \Illuminate\Database\Eloquent\Relations\HasMany
     */
