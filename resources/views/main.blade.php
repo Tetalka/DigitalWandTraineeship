@@ -1,10 +1,10 @@
-@extends('layout')
+@extends('layout.master')
 
 @section('content')
-<div class='container-sm'>
+<div class='container-md'>
     <?php 
-        if ($logined && $user && $user->hasRole('Admin')) {
-            echo "<h1 class='mb-2 d-flex justify-content-center'>Новости<div class='btn-news-add'></h1>";
+        if ($user && $user->hasRole('Admin')) {
+            echo "<h1 class='mb-2 d-flex justify-content-center'>Новости<div class='btn-news-add' data-toggle='modal' data-target='.news-add-modal'></h1>";
         }
         else {
             echo "<h1 class='mb-2 text-center'>Новости</h1>";
@@ -17,7 +17,7 @@
                     <div class='news-item__head no-wrap'>
                         <div class='news-item__title-wrap'><h3 class='news-item__title text-truncate'>{{ $news_item->title }}</h3></div>
                         <div class='news-item__title-comment-wrap text-muted'><strong class='news-item__title-comment text-truncate'>{{ $news_item->titleComment }}</strong></div>
-                        <div class='float-right news-item__categories text-muted text-truncate'>
+                        <div class='news-item__categories text-muted text-truncate'>
                         @foreach ($news_item->categories as $category)
                             <div class='badge news-item__category' style='
                                 background-color: {{ $category->background_color }};
@@ -41,4 +41,13 @@
         @endforeach
     </div>
 </div>
+@endsection
+
+@section('modals')
+        @if ($user && $user->hasRole('Admin')) 
+            @include('forms.news-add')
+        
+        @else 
+            @include('forms.login-regis')
+        @endif
 @endsection

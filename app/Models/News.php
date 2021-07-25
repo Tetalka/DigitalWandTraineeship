@@ -5,7 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
-{
+{   
+    const CREATED_AT = null;
+    const UPDATED_AT = null;
+    
     /*
     * Get all categories of a news item
     *

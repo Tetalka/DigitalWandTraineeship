@@ -5,6 +5,7 @@ use App\Models\News;
 use App\Models\UserCookies;
 use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\NewsController;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
@@ -27,15 +28,19 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::get('/', function() {
+
     $news = News::get();
-    $logined = UserCookies::where('crypt', '=', Cookie::get('login'))->where('expire', '>', Carbon::now())->first();
-    $user = null;
-    if ($logined) {
-        $user = User::find($logined->userId);
-    }
-    return view('main', compact('news', 'logined', 'user'));
+    $user = User::hasAuthorize();
+    return view('main', compact('news', 'user'));
+
 });
 
-Route::post('auth', [AuthorizationController::class, 'do'])->name('authorization.do');
-Route::get('exit', [AuthorizationController::class, 'exit']);
-Route::post('create', [RegistrationController::class, 'create'])->name('registration.create');
+Route::prefix('user')->group(function () {
+    Route::post('auth', [AuthorizationController::class, 'do']);
+    Route::post('create', [RegistrationController::class, 'create']);
+    Route::get('exit', [AuthorizationController::class, 'exit']);
+});
+
+Route::prefix('news')->group(function () {
+    Route::post('create', [NewsController::class, 'create']);
+});

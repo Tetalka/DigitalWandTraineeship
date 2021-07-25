@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
+use App\Models\UserCookies;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+//use Illuminate\Contracts\Auth\MustVerifyEmail;
+//use Illuminate\Database\Eloquent\Factories\HasFactory;
+//use Illuminate\Notifications\Notifiable;
 /*
  * @property int $id
  * @property string $name
@@ -14,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    //use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -62,8 +65,8 @@ class User extends Authenticatable
     *
     * @return bool
     */
-    public function hasRole($name)
-    {
+    public function hasRole($name) {
+
         foreach ($this->roles()->get() as $role)
         {
             if ($role->role == $name)
@@ -73,5 +76,21 @@ class User extends Authenticatable
         }
 
         return false;
+
+    }
+
+    /*
+    * Check if user has authorized by cookie 'Login'
+    *
+    * @return App\Models\User or null
+    */
+    public static function hasAuthorize() {
+
+        $logined = UserCookies::where('crypt', '=', Cookie::get('login'))->where('expire', '>', Carbon::now())->first();
+        if (!$logined) {
+            return null;
+        }
+        return User::find($logined->userId);
+
     }
 }
