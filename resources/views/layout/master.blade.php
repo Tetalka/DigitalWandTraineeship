@@ -1,3 +1,8 @@
+<?php 
+use App\Models\Category;
+
+$categories = Category::get();
+?>
 <!DOCTYPE html>
 <html lang='ru'>
 <head>
@@ -17,15 +22,15 @@
 </head>
 <body>
   <div class='navbar navbar-wrap'>
-    <div class='navbar navbar-expand-md fixed-top navbar-dark bg-dark px-5'>
+    <div class='navbar navbar-expand-md fixed-top bg-dark px-5'>
       <div class='d-flex ml-auto position-relative'>
         <?php
         if ($user) {
           echo "
-          <div class='btn-group'>
-            <div class='dropdown-toggle text-truncate navbutton user' data-toggle='dropdown' aria-expanded='false'>{$user->name}</div>
-            <ul class='dropdown-menu user__menu'>
-              <li class='dropdown-item exitButton'>Выход</li>
+          <div class='btn-group badge border user' data-toggle='dropdown' aria-expanded='false'>
+            <div class='dropdown-toggle text-truncate navbutton' >{$user->name}</div>
+            <ul class='dropdown-menu bg-dark user__menu'>
+              <li class='dropdown-item user__item exitButton'>Выход</li>
             </ul>
           </div>
           ";
@@ -38,6 +43,7 @@
       </div>
     </div>
   </div>
+@include('layout.secondaryNavbar')
 @yield('content')
 @yield('modals')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

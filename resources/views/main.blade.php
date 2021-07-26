@@ -12,17 +12,18 @@
     ?>
     <div class='row'>
         @foreach ($news as $news_item)
-            <div class=' col-12 col-md-6 p-3 mb-3'>
+            <div class='col-12 col-md-6 px-3 news-item-wrap'>
                 <div class='card news-item shadow-sm'>
                     <div class='news-item__head no-wrap'>
                         <div class='news-item__title-wrap'><h3 class='news-item__title text-truncate'>{{ $news_item->title }}</h3></div>
                         <div class='news-item__title-comment-wrap text-muted'><strong class='news-item__title-comment text-truncate'>{{ $news_item->titleComment }}</strong></div>
                         <div class='news-item__categories text-muted text-truncate'>
                         @foreach ($news_item->categories as $category)
-                            <div class='badge news-item__category' style='
-                                background-color: {{ $category->background_color }};
-                                color: {{ $category->font_color}};
-                            '>
+                            <div class='badge news-item__category' 
+                                style='
+                                --background-color: {{ $category->background_color }};
+                                --font-color: {{ $category->font_color }};'
+                            >
                                 {{ $category->name }}
                             </div>
                         @endforeach
