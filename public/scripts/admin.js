@@ -1,6 +1,6 @@
 window.addEventListener('load', function() {
     const newsAddModal = document.querySelector('.news-add-modal');
-    const newsAddForm = newsAddModal.querySelector('form')
+    const newsAddForm = newsAddModal.querySelector('form');
     newsAddModal?.querySelector('.btn-submit').addEventListener('click', async function () {
         const response = await fileAjax('/news/create', 'POST', newsAddForm);
         if (response['status']) {
@@ -28,5 +28,24 @@ window.addEventListener('load', function() {
             return `Выбрано ${count} категорий`;
         },
         style: 'btn-default border'
+    });
+
+    const categoriesAddModal = document.querySelector('.categories-add-modal');
+    const categoriesAddForm = categoriesAddModal.querySelector('form');
+    categoriesAddModal?.querySelector('.btn-submit').addEventListener('click', async function() {
+        /*const added = getInputMarkedData(categoriesAddForm, 'to-add');
+        if (added) {
+            const addedResponse = ajax('/categories/create', 'POST', added);
+        }
+        const updated = getInputMarkedData(categoriesAddForm, 'to-update');
+        if (updated) {
+            const updatedResponse = ajax('/categories/create', 'POST', updated);
+        }
+        const deleted = getInputMarkedData(categoriesAddForm, 'to-delete');
+        if (deleted) {
+            const deletedResponse = ajax('/categories/create', 'POST', deleted);
+        }
+        const data = {added: added, updated: updated, deleted: deleted};
+        const response = await ajax('/categories/create', 'POST', );*/
     });
 });

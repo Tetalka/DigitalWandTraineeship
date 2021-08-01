@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Validator;
 use App\Models\User;
 use App\Models\News;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,18 +43,48 @@ class NewsController extends Controller
         $image = $request->image->move(public_path('images'), rand().'.'.$request->image->extension());
         
 
-        $new_item = new News;
-        $new_item->title = $request->title;
-        $new_item->titleComment = $request->subtitle;
-        $new_item->categories()->attach($request->categories);
-        $new_item->image = $image->getFilename();
-        $new_item->description = $request->text;
-        $new_item->author = $user->id;
+        $news_item = new News;
+        $news_item->title = $request->title;
+        $news_item->titleComment = $request->subtitle;
+        $news_item->categories()->attach($request->categories);
+        $news_item->image = $image->getFilename();
+        $news_item->description = $request->text;
+        $news_item->author = $user->id;
 
-        $created = $new_item->save();
+        $created = $news_item->save();
         if($created) {
             return response(['data'=>['Новость добавлена']]);
         }
         return response(['errors'=>['Не удалось добавить новость']], 500);
+    }
+
+    public function newComment(Request $request) {
+        $user = User::hasAuthorize();
+        if (!$user) {
+            return response([], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'text'=>'required|max:999',
+        ]);
+        if (!$validator->passes()) {
+            return response(['errors'=>$validator->errors()->toArray()], 400);
+        }
+
+        $news_item = News::where('id', '=', $request->news_itemId)->get()->first();
+        if (!$news_item) {
+            return abort(404);
+        }
+
+        $comment = new Comment;
+        $comment->author = $user->id;
+        $comment->news_item = $news_item->id;
+        $comment->text = $request->text;
+
+        $added = $comment->save();
+        if ($added) {
+            return response(['date'=>$comment->create_at], 200);
+        }
+        return abort(500);
     }
 }

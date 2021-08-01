@@ -21,23 +21,26 @@ $categories = Category::get();
     <title>DigitalWand Laravel</title>
 </head>
 <body>
-  <div class='navbar navbar-wrap'>
-    <div class='navbar navbar-expand-md fixed-top bg-dark px-5'>
-      <div class='d-flex ml-auto position-relative'>
+  <div class='navbar navbar-wrap sticky-top'>
+    <div class='navbar navbar-expand-md ml-auto bg-dark px-5 py-0 h-auto'>
+      <!--if ($user && $user->hasRole('No one'))
+        include('layout.navbar')
+      endif
+      <div class='d-flex ml-auto position-relative'>-->
         <?php
         if ($user) {
           echo "
-          <div class='btn-group badge border user' data-toggle='dropdown' aria-expanded='false'>
+          <div class='btn-group badge border user' data-name={{ $user->name }} data-toggle='dropdown' aria-expanded='false'>
             <div class='dropdown-toggle text-truncate navbutton' >{$user->name}</div>
-            <ul class='dropdown-menu bg-dark user__menu'>
+            <ul class='dropdown-menu mt-0 bg-dark user__menu'>
               <li class='dropdown-item user__item exitButton'>Выход</li>
             </ul>
           </div>
           ";
         }
         else echo "
-          <div class='mr-3 navbutton login' data-toggle='modal' data-target='.login-regis-modal'>Войти</div>
-          <div class='navbutton regis' data-toggle='modal' data-target='.login-regis-modal'>Регистрация</div>
+          <button class='mr-3 btn btn-outline-light navbutton login' data-toggle='modal' data-target='.login-regis-modal'>Войти</button>
+          <button class='btn btn-outline-light navbutton regis' data-toggle='modal' data-target='.login-regis-modal'>Регистрация</button>
           ";
         ?>
       </div>

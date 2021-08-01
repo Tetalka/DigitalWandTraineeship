@@ -1,9 +1,6 @@
 function getElement(tag, classes, text = '') {
     let element = document.createElement(tag);
-    if(Array.isArray(classes)) {
-      element.classList.add(...classes);
-    }
-    else element.classList.add(classes);
+    element.className = classes;
     element.textContent = text;
     return element;
   }
@@ -18,6 +15,7 @@ function getInputData(form) {
 function clearInputData(form) {
     for (const input of form.querySelectorAll('[name]')) {
         input.value = '';
+        input.textContent = '';
         if(input.selectpicker) {
             input.selectpicker('refresh');
         }
@@ -32,6 +30,17 @@ async function ajax(url, method, data) {
         'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
+    });
+    return {
+        'status': response.ok,
+        'message': await response?.json()
+    };
+}
+async function GET(url) {
+    const response = await fetch(url, {
+        headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
     });
     return {
         'status': response.ok,
@@ -58,7 +67,7 @@ function showErrors(errors, form) {
     }
     if (typeof errors == 'string') {
         form.querySelector('.form-message')?.remove();
-        const error = getElement('div', ['text-danger', 'form-message'], errors);
+        const error = getElement('div', 'text-danger form-message', errors);
         form.appendChild(error);
         return;
     }
@@ -66,7 +75,7 @@ function showErrors(errors, form) {
         const input = form.querySelector(`[name='${name}'], [name='${name}[]']`);
         const label = input.parentNode;
         label.querySelector('.text-danger')?.remove();
-        const errorsBlock = getElement('div', ['text-danger']);
+        const errorsBlock = getElement('div', 'text-danger');
         for(const message of errors[name]) {
             const error = getElement('div', null, message);
             errorsBlock.appendChild(error);
@@ -96,4 +105,18 @@ function showData(dataArray, form) {
         </div>
     `;
     form.appendChild(messageBlock);
+}
+
+function startLoading(parent) {
+    const block = getElement('div', 'loading-wrap');
+    for (let i = 0; i < 3; i++) {
+        let dot = getElement('div', 'spinner-grow text-success');
+        dot.style = `--i: ${i*200}ms`;
+        dot.innerHTML = `<span class="sr-only"></span>`;
+        block.appendChild(dot);
+    }
+    parent.appendChild(block);
+}
+function stopLoading(parent) {
+    parent.querySelector('.loading-wrap').remove();
 }

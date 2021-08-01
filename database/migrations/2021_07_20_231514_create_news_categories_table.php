@@ -15,7 +15,7 @@ class CreateNewsCategoriesTable extends Migration
     {
         Schema::create('news_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('new')->references('id')->on('news');
+            $table->foreignId('news_item')->references('id')->on('news');
             $table->foreignId('category')->references('id')->on('categories');
         });
     }

@@ -4,7 +4,7 @@
       <div class="modal-header">
         <h5 class="modal-title" id="login-regis-modalLabel">Вход</h5>
         <button class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true">X</span>
         </button>
       </div>
       <div class="modal-body">
@@ -38,8 +38,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-        <button class="btn btn-success btn-submit">Войти</button>
+        <button class="btn btn-outline-secondary" data-dismiss="modal">Закрыть</button>
+        <button class="btn btn-outline-success btn-submit">Войти</button>
       </div>
     </div>
   </div>

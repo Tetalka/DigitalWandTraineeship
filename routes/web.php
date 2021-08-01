@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::get('/', function() {
-
+    
     $news = News::get();
     $user = User::hasAuthorize();
     return view('main', compact('news', 'user'));
@@ -43,4 +43,23 @@ Route::prefix('user')->group(function () {
 
 Route::prefix('news')->group(function () {
     Route::post('create', [NewsController::class, 'create']);
+    Route::prefix('comments')->group(function () {
+        Route::get('{id}', function($id) {
+                
+                $new_item = News::where('id' , '=', $id)->get()->first();
+                if (!$new_item) {
+                    return abort(404);
+                }
+                //$comments = News::where('id', '=', $id)->with('comments')->get();
+                $comments = $new_item->comments()->get(['author', 'text', 'created_at']);
+                /*if ($comments->count()) {
+                    return abort(404);
+                }*/
+                return response($comments->toJson());
+
+        });
+        Route::post('create', [NewsController::class, 'newComment']);
+
+    });
+
 });
