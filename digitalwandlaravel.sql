@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:33006
--- Время создания: Авг 01 2021 г., 21:27
+-- Время создания: Авг 03 2021 г., 02:14
 -- Версия сервера: 8.0.19
 -- Версия PHP: 7.4.14
 
@@ -55,15 +55,16 @@ CREATE TABLE `comments` (
   `news_item` bigint UNSIGNED NOT NULL,
   `text` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `approved` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Дамп данных таблицы `comments`
 --
 
-INSERT INTO `comments` (`id`, `author`, `news_item`, `text`, `created_at`, `updated_at`) VALUES
-(2, 8, 2, '123', '2021-08-01 16:06:28', NULL);
+INSERT INTO `comments` (`id`, `author`, `news_item`, `text`, `created_at`, `updated_at`, `approved`) VALUES
+(2, 8, 2, '123', '2021-08-01 16:06:28', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -217,7 +218,8 @@ INSERT INTO `users_cookies` (`id`, `userId`, `name`, `crypt`, `expire`) VALUES
 (2, 8, 'login', 'eyJpdiI6ImdiTmtETmxwTTNtd0VodmJjQWs3UWc9PSIsInZhbHVlIjoiMnZaOVBZSTd4OERXQklWekl6TGFQUT09IiwibWFjIjoiODkzNGRmMmJlMzFhNDZiOTQ1NjFiYWE1ZmFjODBjOWY2OWFjYWFkOWM1NDZlYTEyOTdiODFiNjA2NTE4OGZiMSJ9', '2021-07-25 22:38:21'),
 (3, 8, 'login', 'eyJpdiI6IjZSZ3cxVUN5Q3JWYmhHblNrOWpZaWc9PSIsInZhbHVlIjoidHVMMndTMHFDbWxyWGhTdTJHQlRqUT09IiwibWFjIjoiMTk0NTkyMWNkNmRlYTg4NDhlYjc2MzY0NDYxYTI2NTc1ZGMwNzk1NGM4YTUzOWE3OGQxNGVkMmE4ZGNkYzY3NSJ9', '2021-07-26 22:40:41'),
 (4, 8, 'login', 'eyJpdiI6Ik9KREVwdGgzdjdRbXJqM0JSTjV2Mmc9PSIsInZhbHVlIjoiektrb2VUWnZPbDRWazViNWFSVnNvZz09IiwibWFjIjoiZjkwYmNlNDg3NGY4ZTllZDQ4YzViNTA3Y2I1OTgzMGI3Mjg3NThhYmNhYjQyNGExOWE1YjE5NzA3NmVlMTAzZCJ9', '2021-07-28 10:17:10'),
-(5, 8, 'login', 'eyJpdiI6InJ0SkswaUFjbTlNMFdwS0xnejFHbVE9PSIsInZhbHVlIjoibW9VZVhwaUNkWDBnVFpseElNbDhFUT09IiwibWFjIjoiNDJkMTBhYmRmYWJkMzk1ZTU4MzMzZWQ2MzZmYzhmZmU0NzlmYjFkMjA0MGZlMjZkYjNhYWViMzFlNDg4NmNjMyJ9', '2021-08-02 18:08:30');
+(5, 8, 'login', 'eyJpdiI6InJ0SkswaUFjbTlNMFdwS0xnejFHbVE9PSIsInZhbHVlIjoibW9VZVhwaUNkWDBnVFpseElNbDhFUT09IiwibWFjIjoiNDJkMTBhYmRmYWJkMzk1ZTU4MzMzZWQ2MzZmYzhmZmU0NzlmYjFkMjA0MGZlMjZkYjNhYWViMzFlNDg4NmNjMyJ9', '2021-08-02 18:08:30'),
+(9, 8, 'login', 'eyJpdiI6IlhzMVNLVW9WNHdqbGZseDZKZWVDU0E9PSIsInZhbHVlIjoiUHFwRFRibUpRODNxNmdlSmp2TVhqQT09IiwibWFjIjoiNTI0OTAyZDRlNmQxMTk4MGQ0MTU5NDBiMzUwYWE5NzQyYmYwNzMwMzU3M2IwMjkyZmI1YmVhZDlkODE4OWMwZCJ9', '2021-08-04 01:44:36');
 
 -- --------------------------------------------------------
 
@@ -327,7 +329,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT для таблицы `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `migrations`
@@ -363,7 +365,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `users_cookies`
 --
 ALTER TABLE `users_cookies`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT для таблицы `users_roles`
