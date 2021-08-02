@@ -89,22 +89,48 @@ function showErrors(errors, form) {
     }
 }
 
-function showData(dataArray, form) {
-    if (!dataArray) return;
-    form.querySelector('.form-message')?.remove();
-    const messageBlock = document.createElement('div');
-    messageBlock.innerHTML = `
-        <div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
-            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-            <div>
-                <svg class="bi flex-shrink-0 me-2" width="24" height="24" viewBox="0 0 16 16" fill="currentColor" role="img" aria-label="Success:">
+function showMessage(data, parent = null, styleType = 'success', icon = null) {
+    if (!data) {
+        return;
+    }
+
+    message = '';
+    if (icon) {
+        const icons = {
+            'success': 
+                `<svg class="bi flex-shrink-0 me-2" width="24" height="24" viewBox="0 0 16 16" fill="currentColor" role="img" aria-label="Success:">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                </svg>
-                ${dataArray[0]}
-            </div>
-        </div>
-    `;
-    form.appendChild(messageBlock);
+                </svg>`,
+        }
+        icon = icons[icon];
+    }
+    else {
+        icon = '';
+    }
+    
+    const styleTypes = {
+        'success': 
+            `<div class="alert alert-success alert-dismissible d-flex align-items-center" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">X</button>
+                <div>
+                    ${icon}
+                    ${data}
+                </div>
+            </div>`,
+        'danger': 
+            `<div class="alert alert-danger alert-dismissible d-flex align-items-center" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">X</button>
+                <div>
+                    ${icon}
+                    ${data}
+                </div>
+            </div>`,
+    };
+    html = styleTypes[styleType];
+    const messageBlock = getElement('div', 'w-100');
+    messageBlock.innerHTML = html;
+    parent?.appendChild(messageBlock);
+    return messageBlock;
 }
 
 function startLoading(parent) {

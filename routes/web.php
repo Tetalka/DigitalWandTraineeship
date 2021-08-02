@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\User;
-use App\Models\News;
+use App\Models\NewsItem;
+use App\Models\Comment;
 use App\Models\UserCookies;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\NewsController;
@@ -28,11 +30,9 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::get('/', function() {
-    
-    $news = News::get();
-    $user = User::hasAuthorize();
-    return view('main', compact('news', 'user'));
 
+    return view('main');
+    
 });
 
 Route::prefix('user')->group(function () {
@@ -44,22 +44,32 @@ Route::prefix('user')->group(function () {
 Route::prefix('news')->group(function () {
     Route::post('create', [NewsController::class, 'create']);
     Route::prefix('comments')->group(function () {
-        Route::get('{id}', function($id) {
-                
-                $new_item = News::where('id' , '=', $id)->get()->first();
-                if (!$new_item) {
-                    return abort(404);
+        Route::prefix('moderate')->group(function () {
+            Route::get('/', function() {
+
+                $user = User::hasAuthorize();
+                if (!$user) {
+                    return abort(403);
                 }
-                //$comments = News::where('id', '=', $id)->with('comments')->get();
-                $comments = $new_item->comments()->get(['author', 'text', 'created_at']);
-                /*if ($comments->count()) {
-                    return abort(404);
-                }*/
-                return response($comments->toJson());
+                return view('comments-moderate', compact('user'));
+
+            })->name('news.comments.moderate');
+            Route::put('/', [CommentsController::class, 'approve']);
+            Route::delete('/', [CommentsController::class, 'reject']);
+        });
+        Route::get('/{id}', function($id) { //Тут проблема, что он всё принимает за параметр
+                
+            $new_item = NewsItem::find($id);
+            if (!$new_item) {
+                return abort(404);
+            }
+            //$comments = News::where('id', '=', $id)->with('comments')->get();
+            $comments = $new_item->comments()->get(['author', 'text', 'created_at']);
+            return response($comments->toJson());
 
         });
-        Route::post('create', [NewsController::class, 'newComment']);
 
+        Route::post('create', [NewsController::class, 'newComment']);
     });
 
 });

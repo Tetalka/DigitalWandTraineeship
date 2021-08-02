@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Validator;
 use App\Models\User;
-use App\Models\News;
 use App\Models\Comment;
+use App\Models\NewsItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -43,7 +43,7 @@ class NewsController extends Controller
         $image = $request->image->move(public_path('images'), rand().'.'.$request->image->extension());
         
 
-        $news_item = new News;
+        $news_item = new NewsItem;
         $news_item->title = $request->title;
         $news_item->titleComment = $request->subtitle;
         $news_item->categories()->attach($request->categories);
@@ -71,7 +71,7 @@ class NewsController extends Controller
             return response(['errors'=>$validator->errors()->toArray()], 400);
         }
 
-        $news_item = News::where('id', '=', $request->news_itemId)->get()->first();
+        $news_item = NewsItem::where('id', '=', $request->news_itemId)->get()->first();
         if (!$news_item) {
             return abort(404);
         }

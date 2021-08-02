@@ -23,10 +23,6 @@ $categories = Category::get();
 <body>
   <div class='navbar navbar-wrap sticky-top'>
     <div class='navbar navbar-expand-md ml-auto bg-dark px-5 py-0 h-auto'>
-      <!--if ($user && $user->hasRole('No one'))
-        include('layout.navbar')
-      endif
-      <div class='d-flex ml-auto position-relative'>-->
         <?php
         if ($user) {
           echo "
@@ -47,18 +43,14 @@ $categories = Category::get();
     </div>
   </div>
 @include('layout.secondaryNavbar')
+<div class='container-md'>
+  <h1 class='page-title'>@yield('page-title')</h1>
 @yield('content')
+</div>
 @yield('modals')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <script src='/scripts/module.js'></script>
 <script src='/scripts/main.js'></script>
-<?php 
-  if($user && $user->hasRole('Admin')) {
-    echo "
-    <script src='/scripts/admin.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js'></script>
-    ";
-  }
-?>
+@yield('scripts')
 </body>
 </html>

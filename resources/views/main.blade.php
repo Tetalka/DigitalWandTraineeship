@@ -1,21 +1,26 @@
-<?php 
+<?php
+use App\Models\User;
+use App\Models\NewsItem;
 use App\Models\Category;
-
+    
+$news = NewsItem::get();
+$user = User::hasAuthorize();
 $categories = Category::get();
+$title = 'Новости';
 ?>
 
 @extends('layout.master')
 
 @section('content')
-<div class='container-md'>
-    <?php 
-        if ($user && $user->hasRole('Admin')) {
-            echo "<h1 class='page-title'>Новости<div class='btn-add btn-news-add' data-toggle='modal' data-target='.news-add-modal'></h1>";
-        }
-        else {
-            echo "<h1 class='page-title'>Новости</h1>";
-        }
-    ?>
+    @if ($user && $user->hasRole('Admin')) 
+        @section('page-title')
+            {{ $title }}<div class='btn-add btn-news-add' data-toggle='modal' data-target='.news-add-modal'>
+        @endsection
+    @else 
+        @section('page-title')
+            {{ $title }}
+        @endsection
+    @endif
     <div class='row news'>
         @foreach ($news as $news_item)
             <div class='col-12 col-md-6 px-3 news-item-wrap'>
@@ -60,7 +65,6 @@ $categories = Category::get();
             </div>
         @endforeach
     </div>
-</div>
 @endsection
 
 @section('modals')
@@ -71,4 +75,11 @@ $categories = Category::get();
             @include('forms.login-regis')
         @endif
         @include('forms.comment')
+@endsection
+
+@section('scripts')
+    @if ($user && $user->hasRole('Admin')) 
+        <script src='/scripts/roles/admin/main.js'></script>
+        <script src='https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js'></script>
+    @endif
 @endsection

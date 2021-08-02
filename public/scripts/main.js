@@ -37,23 +37,25 @@ window.addEventListener('load', function() {
             window.location.reload();
         }
         showErrors(response['message']['errors'], loginForm);
-        showData(response['message']['data'], loginForm);
+        loginForm.querySelector('.form-message')?.remove();
+        showMessage(response['message']['data'], loginForm, 'success', 'success');
     }
     async function doRegis() {
         const response = await ajax('/user/create', 'POST', getInputData(regisForm));
         showErrors(response['message']['errors'], regisForm);
-        showData(response['message']['data'], regisForm);
+        regisForm.querySelector('.form-message')?.remove();
+        showMessage(response['message']['data'], regisForm, 'success', 'success');
     }
 
     document.querySelector('.navbar .exitButton')?.addEventListener('click', async function() {
         if(await fetch('/user/exit')) {
-            window.location.reload();
+            window.location.assign('/');
         }
     })
 
     const news = document.querySelector('.news');
     const commentForm = document.querySelector('.comment-form');
-    commentForm.remove();
+    commentForm?.remove();
     const comments = getElement('div', 'comments');
     for (const item of document.querySelectorAll('.news-item')) {
         item.querySelector('.news-item__title').addEventListener('click', open);
@@ -91,8 +93,8 @@ window.addEventListener('load', function() {
             stopLoading(this);
             this.textContent = text;
             if (response['status']) {
-                let username = document.querySelector('user').getAttribute('data-name');
-                createComment(username, data['text'], response['message']['created_at']);
+                let username = document.querySelector('.user').getAttribute('data-name');
+                comment = createComment(username, data['text'], response['message']['created_at']);
                 clearCommentMessage();
                 comments.prepend(comment);
             }

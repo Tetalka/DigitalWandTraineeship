@@ -19,6 +19,7 @@ class CreateCommentsTable extends Migration
             $table->foreignId('news_item')->constrained('news');
             $table->text('text', 999);
             $table->timestamps();
+            $table->boolean('approved', 0);
         });
     }
 

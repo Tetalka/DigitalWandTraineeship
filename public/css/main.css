@@ -252,7 +252,7 @@
 .comments {
     padding: 0 var(--px-padding);
 }
-.comment {
+.news-item .comment {
     margin: 1rem 0;
 }
 
@@ -297,6 +297,10 @@
     background-color: var(--light);
 }
 
+/* moderate comments*/
+.comments .alert {
+    margin-bottom: 1.5rem;
+}
 
 @media (min-width: 1440px) {
     .container-md {

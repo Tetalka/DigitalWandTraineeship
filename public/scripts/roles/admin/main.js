@@ -1,13 +1,13 @@
 window.addEventListener('load', function() {
     const newsAddModal = document.querySelector('.news-add-modal');
-    const newsAddForm = newsAddModal.querySelector('form');
+    const newsAddForm = newsAddModal?.querySelector('form');
     newsAddModal?.querySelector('.btn-submit').addEventListener('click', async function () {
         const response = await fileAjax('/news/create', 'POST', newsAddForm);
         if (response['status']) {
             clearInputData(newsAddForm);
         }
         showErrors(response['message']['errors'], newsAddForm);
-        showData(response['message']['data'], newsAddForm);
+        showMessage(response['message']['data'], newsAddForm, 'success', 'success');
     });
 
     const categoriesPicker = $('.news-add-modal [name="categories[]"]');
@@ -31,7 +31,7 @@ window.addEventListener('load', function() {
     });
 
     const categoriesAddModal = document.querySelector('.categories-add-modal');
-    const categoriesAddForm = categoriesAddModal.querySelector('form');
+    const categoriesAddForm = categoriesAddModal?.querySelector('form');
     categoriesAddModal?.querySelector('.btn-submit').addEventListener('click', async function() {
         /*const added = getInputMarkedData(categoriesAddForm, 'to-add');
         if (added) {
