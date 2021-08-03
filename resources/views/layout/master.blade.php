@@ -23,11 +23,15 @@ $categories = Category::get();
 <body>
   <div class='navbar navbar-wrap sticky-top'>
     <div class='navbar navbar-expand-md ml-auto bg-dark px-5 py-0 h-auto'>
+      <!--if ($user && $user->hasRole('No one'))
+        include('layout.navbar')
+      endif
+      <div class='d-flex ml-auto position-relative'>-->
         <?php
         if ($user) {
           echo "
-          <div class='btn-group badge border user' data-name={{ $user->name }} data-toggle='dropdown' aria-expanded='false'>
-            <div class='dropdown-toggle text-truncate navbutton' >{$user->name}</div>
+          <div class='btn-group badge border user' data-name=$user->name data-toggle='dropdown' aria-expanded='false'>
+            <div class='dropdown-toggle text-truncate navbutton'>$user->name</div>
             <ul class='dropdown-menu mt-0 bg-dark user__menu'>
               <li class='dropdown-item user__item exitButton'>Выход</li>
             </ul>

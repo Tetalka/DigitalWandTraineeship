@@ -59,14 +59,26 @@ Route::prefix('news')->group(function () {
         });
         Route::get('/{id}', function($id) { //Тут проблема, что он всё принимает за параметр
                 
-            $new_item = NewsItem::find($id);
-            if (!$new_item) {
+            $newsItem = NewsItem::find($id);
+            if (!$newsItem) {
                 return abort(404);
             }
             //$comments = News::where('id', '=', $id)->with('comments')->get();
-            $comments = $new_item->comments()->get(['author', 'text', 'created_at']);
-            return response($comments->toJson());
+            //$comments = $new_item->comments()->get(['author', 'text', 'created_at']);
+            $comments = $newsItem->comments()->get();
 
+            $return = [];
+            
+            foreach($comments as $comment) {
+                array_push($return, [
+                    'author' => $comment->author()->name,
+                    'text' => $comment->text,
+                    'date' => $comment->created_at,
+                ]);
+            }
+
+            //return response($comments->toJson());
+            return response($return);
         });
 
         Route::post('create', [NewsController::class, 'newComment']);

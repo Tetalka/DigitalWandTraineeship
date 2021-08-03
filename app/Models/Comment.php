@@ -3,12 +3,19 @@
 namespace App\Models;
 
 //use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon;
 use Illuminate\Database\Eloquent\Model;
+
 
 class Comment extends Model
 {
     const UPDATED_AT = null;
 
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date);
+    }
+    
    /*
     * Get the news item the comment attached to
     *

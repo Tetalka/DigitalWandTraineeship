@@ -32,7 +32,7 @@ window.addEventListener('load', function() {
                 return;
             }
             if (index != comments.length-1) {
-                const nextSibling = comment[index+1];
+                const nextSibling = comments[index+1];
                 const alert = showMessage(text, null, styleType, icon);
                 nextSibling.before(alert);
             }

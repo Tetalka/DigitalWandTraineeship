@@ -94,7 +94,7 @@ window.addEventListener('load', function() {
             this.textContent = text;
             if (response['status']) {
                 let username = document.querySelector('.user').getAttribute('data-name');
-                comment = createComment(username, data['text'], response['message']['created_at']);
+                comment = createComment(username, data['text'], response['message']['date'], response['message']['approved']);
                 clearCommentMessage();
                 comments.prepend(comment);
             }
@@ -137,7 +137,7 @@ window.addEventListener('load', function() {
                     comments.appendChild(message);
                 }
                 for (const data of response['message']) {
-                    const comment = createComment(data['author'], data['text'], data['created_at']);
+                    const comment = createComment(data['author'], data['text'], data['date']);
                     comments.appendChild(comment);
                 }
             }
@@ -153,11 +153,11 @@ window.addEventListener('load', function() {
         function clearCommentMessage() {
             comments.querySelector('.comment-message')?.remove();
         }
-        function createComment(author, text, date) {
+        function createComment(author, text, date, approved = true) {
             const comment = getElement('div', 'col-12 px-0 comment');
             comment.innerHTML = `
             <div class="">
-                <h5>${author}</h5>
+                <h5>${author}${!approved? ' <span class="text-muted">На модерации</span>' : ''}</h5>
                 <h6>${date}</h6>
                 <div class="mt-3">
                     <div class=''>
