@@ -101,7 +101,7 @@ window.addEventListener('load', function() {
         }
         function open() {
             itemPage.querySelector('.news-item__footer').appendChild(commentForm);
-            commentForm.querySelector('.btn-submit').addEventListener('click', sendComment);
+            commentForm.querySelector('.btn-submit')?.addEventListener('click', sendComment);
 
             itemPage.appendChild(comments);
             
@@ -147,7 +147,7 @@ window.addEventListener('load', function() {
             comments.innerHTML = '';
             this.remove();
             itemPage.remove();
-            commentForm.querySelector('.btn-submit').removeEventListener('click', sendComment);
+            commentForm.querySelector('.btn-submit')?.removeEventListener('click', sendComment);
             news.classList.remove('d-none');
         }
         function clearCommentMessage() {
