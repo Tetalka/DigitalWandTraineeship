@@ -26,16 +26,15 @@
                 @endforeach
             </div>
         </div>
-        <div class='my-4 border-top'></div>
+        @if ($user && $user->hasRole('Admin'))
+            <div class='my-4 border-top'></div>
             <div>
-                @if ($user && $user->hasRole('Admin'))
-                    @if (Route::currentRouteName() == 'news.comments.moderate')
-                        <a href='/' class='btn btn-outline-light w-100'>Главная</a>
-                    @else
-                        <a href='{{ route("news.comments.moderate") }}' class='btn btn-outline-success w-100'>Модерация</a>
-                    @endif
-                    
+                @if (Route::currentRouteName() == 'news.comments.moderate')
+                    <a href='/' class='btn btn-outline-light w-100'>Главная</a>
+                @else
+                    <a href='{{ route("news.comments.moderate") }}' class='btn btn-outline-success w-100'>Модерация</a>
                 @endif
             </div>
-        </div>
+        @endif
     </div>
+</div>

@@ -54,10 +54,11 @@ Route::prefix('news')->group(function () {
                 return view('comments-moderate', compact('user'));
 
             })->name('news.comments.moderate');
+
             Route::put('/', [CommentsController::class, 'approve']);
             Route::delete('/', [CommentsController::class, 'reject']);
         });
-        Route::get('/{id}', function($id) { //Тут проблема, что он всё принимает за параметр
+        Route::get('/{id}', function($id) { // !!! Тут проблема, что он всё принимает за параметр
                 
             $newsItem = NewsItem::find($id);
             if (!$newsItem) {
@@ -71,9 +72,9 @@ Route::prefix('news')->group(function () {
             
             foreach($comments as $comment) {
                 array_push($return, [
-                    'author' => $comment->author()->name,
+                    'author' => $comment->author()->name, // Лучше, наверное, через select и join
                     'text' => $comment->text,
-                    'date' => $comment->created_at,
+                    'date' => $comment->created_at(),
                 ]);
             }
 

@@ -83,7 +83,7 @@ class NewsController extends Controller
 
         $added = $comment->save();
         if ($added) {
-            return response(['date'=>$comment->created_at, 'approved'=>$comment->approved], 200);
+            return response(['date'=>$comment->created_at(), 'approved'=>$comment->approved], 200);
         }
         return abort(500);
     }

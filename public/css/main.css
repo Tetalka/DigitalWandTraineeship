@@ -60,16 +60,16 @@
     z-index: 999;
     transition: 300ms;
 }
-.categories {
+.navbar-vertical .categories {
     display: flex;
     padding: 5px;
     border: 1px solid var(--light);
     border-radius: 0.5rem;
 }
-.categories .category {
+.navbar-vertical .categories .category {
     font-size: 1rem;
 }
-.categories .category:hover {
+.navbar-vertical .categories .category:hover {
     background-color: var(--background-color);
     color: var(--font-color);
     border: 1px solid var(--light) !important;
@@ -77,7 +77,8 @@
 .badge {
     margin: 5px;
     padding: 0.5rem 0.7rem;
-    display: block;
+    display: flex;
+    align-items: center;
     cursor: pointer;
     transition-duration: 250ms;
 }
@@ -193,6 +194,7 @@
 .news-item__text {
     padding: 0 var(--px-padding);
     -webkit-line-clamp: 7;
+    white-space: pre-line;
 }
 .news-item__text.text-truncate {
     position: relative;
@@ -300,6 +302,22 @@
 /* moderate comments*/
 .comments .alert {
     margin-bottom: 1.5rem;
+}
+
+/* add categories*/
+.categories-add-modal .categories .category {
+    cursor: default;
+    font-size: 1rem;
+    font-weight: normal;
+    /*border: 1px solid var(--background-color);
+    color: var(--background-color);*/
+}
+.categories-add-modal .category__name:focus {
+    cursor: text;
+}
+.categories-add-modal .category__controls .btn * {
+    width: 14px;
+    display: block;
 }
 
 @media (min-width: 1440px) {
