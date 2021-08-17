@@ -74,7 +74,7 @@ Route::prefix('news')->group(function () {
                 array_push($return, [
                     'author' => $comment->author()->name, // Лучше, наверное, через select и join
                     'text' => $comment->text,
-                    'date' => $comment->created_at(),
+                    'date' => $comment->created_at,
                 ]);
             }
 

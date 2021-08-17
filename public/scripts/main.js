@@ -94,7 +94,8 @@ window.addEventListener('load', function() {
             this.textContent = text;
             if (response['status']) {
                 let username = document.querySelector('.user').getAttribute('data-name');
-                comment = createComment(username, data['text'], response['message']['date'], response['message']['approved']);
+                const date = new Date(response['message']['date']).format('dd.mm.yyyy HH:MM:ss');
+                comment = createComment(username, data['text'], date, response['message']['approved']);
                 clearCommentMessage();
                 comments.prepend(comment);
             }
@@ -137,7 +138,8 @@ window.addEventListener('load', function() {
                     comments.appendChild(message);
                 }
                 for (const data of response['message']) {
-                    const comment = createComment(data['author'], data['text'], data['date']);
+                    const date = new Date(data['date']).format('dd.mm.yyyy HH:MM:ss');
+                    const comment = createComment(data['author'], data['text'], date);
                     comments.appendChild(comment);
                 }
             }
