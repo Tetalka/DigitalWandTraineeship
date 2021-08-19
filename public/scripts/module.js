@@ -179,6 +179,20 @@ function getIcon(name, html = true) {
     return fromHTML(icons[name]);
 }
 
+function highlight(space = document, selector, style, ms = 0) {
+    let elem = selector;
+    if (typeof selector == 'string') {
+        elem = space.querySelector(selector);
+    }
+
+    if (!elem) return false;
+    elem.classList.add(style);
+
+    if (ms) setTimeout(function() {
+        elem.classList.remove(style);
+    }, ms);
+}
+
 function fromHTML(html) {
     const placeholder = document.createElement('div');
     placeholder.innerHTML = html;

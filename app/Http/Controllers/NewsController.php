@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Models\NewsItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+//use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
@@ -83,7 +83,7 @@ class NewsController extends Controller
 
         $added = $comment->save();
         if ($added) {
-            return response(['date'=>$comment->created_at(), 'approved'=>$comment->approved], 200);
+            return response(['date'=>$comment->created_at, 'approved'=>$comment->approved], 200);
         }
         return abort(500);
     }

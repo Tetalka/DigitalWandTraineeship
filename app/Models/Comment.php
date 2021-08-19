@@ -11,13 +11,13 @@ class Comment extends Model
 {
     const UPDATED_AT = null;
 
-    public function getCreatedAtAttribute($date) // !!! работает не всегда
+    /*public function getCreatedAtAttribute($date) // !!! работает не всегда
     {
         return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date);
     }
     public function created_at() {
         return $this->created_at->format('Y-m-d H:i:s');
-    }
+    }*/
     
    /*
     * Get the news item the comment attached to

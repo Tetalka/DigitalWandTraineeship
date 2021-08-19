@@ -10,7 +10,7 @@
       <div class='modal-body'>
         <div class='row flex-wrap px-2 pb-3 mx-0 categories'>
             @foreach($categories as $category) 
-                <div class='badge category border p-0 pl-3' data-name='{{ $category->name }}' data-id='{{ $category->id }}'
+                <div class='badge category p-0 pl-3' data-name='{{ $category->name }}' data-id='{{ $category->id }}'
                     {{-- style='
                     --background-color: {{ $category->background_color }};
                     --font-color: {{ $category->font_color }};'

@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\UserCookies;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\AuthorizationController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\NewsController;
 use Carbon\Carbon;
@@ -72,9 +73,9 @@ Route::prefix('news')->group(function () {
             
             foreach($comments as $comment) {
                 array_push($return, [
-                    'author' => $comment->author()->name, // Лучше, наверное, через select и join
+                    'author' => $comment->author()->name, // Лучше, наверное, через select и join //Да, лучше
                     'text' => $comment->text,
-                    'date' => $comment->created_at(),
+                    'date' => $comment->created_at,
                 ]);
             }
 
@@ -84,5 +85,10 @@ Route::prefix('news')->group(function () {
 
         Route::post('create', [NewsController::class, 'newComment']);
     });
+});
 
+Route::prefix('categories')->group(function () {
+    Route::post('/', [CategoriesController::class, 'create']);
+    Route::put('/', [CategoriesController::class, 'update']);
+    Route::delete('/', [CategoriesController::class, 'delete']);
 });
