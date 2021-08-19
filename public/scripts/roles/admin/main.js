@@ -1,4 +1,6 @@
 window.addEventListener('load', function() {
+    const conclude_dur = 3000;
+
     const newsAddModal = document.querySelector('.news-add-modal');
     const newsAddForm = newsAddModal?.querySelector('form');
     newsAddModal?.querySelector('.btn-submit').addEventListener('click', async function () {
@@ -43,8 +45,8 @@ window.addEventListener('load', function() {
         
         
         function addBtnDiscard(block = null) {
-            if (controls.querySelector('.btn-discard')) {
-                return;
+            if (existed = controls.querySelector('.btn-discard')) {
+                return existed;
             }
             const btn = getElement('button', 'btn btn-outline-secondary btn-discard');
             btn.innerHTML = getIcon('discard');
@@ -136,7 +138,8 @@ window.addEventListener('load', function() {
     }
     categoriesAddForm.querySelector('.btn-insert').addEventListener('click', addCategory);
     function addCategory() {
-        const name = categoriesAddForm.querySelector('[name = "name"]').value;
+        input = categoriesAddForm.querySelector('[name = "name"]');
+        const name = input.value;
         if (!name.trim()) {
             return;
         }
@@ -146,7 +149,7 @@ window.addEventListener('load', function() {
         }
 
         const category = fromHTML(`
-        <div class="badge category border p-0 pl-3 to-add" data-name="${name}"> 
+        <div class="badge category p-0 pl-3 to-add" data-name="${name}"> 
             <span class="category__name">${name}</span>
             <div class="btn-group category__controls h-100 pl-3">
                 <div class="btn-group general">
@@ -157,36 +160,118 @@ window.addEventListener('load', function() {
         `);
         category.querySelector('.btn-delete').addEventListener('click', destroy);
         categories.appendChild(category);
+        input.value = '';
     }
 
-    function getMarkedData(form, mark) {
-        const data = {};
+    function getMarked(form, mark) {
+        const data = [];
+        data.__proto__.find = function(id) {
+            for (let obj of this) {
+                if (obj['id'] === id) 
+                return {
+                    field: obj['field'], 
+                    index: this.indexOf(obj)
+                };
+            }
+            return false;
+        };
+        data.__proto__.remove = function(to, from = 0) {
+            let rest = this.slice((to || from) + 1 || this.length);
+            this.length = from < 0 ? this.length + from : from;
+            return this.push.apply(this, rest);
+        };
         
-        for (const input of form.querySelectorAll(`[class*="${mark}"]`)) {
-            const id = input.getAttribute('data-id');
-            if (id) {
-                data[id] = input.value;
-            }
-            else {
-                //data[] !!!
-            }
+        for (const field of form.querySelectorAll(`[class*="${mark}"]`)) {
+            let id = field.getAttribute('data-id');
+            const name = field.querySelector('.category__name').textContent;
+            id = id? id : name;
+            data.push({id: id, field: field});
         }
         return data;
     }
+
+    function getMarkedData(marked) {
+        const data = [];
+        
+        for (const one of marked) {
+            const id = one['id'];
+            const field = one['field'];
+            const name = field.querySelector('.category__name').textContent;
+            const realName = field.getAttribute('data-name');
+            if (realName && name != realName) {
+                obj = {
+                    id: id,
+                    become: name
+                }
+                data.push(obj);
+                continue;
+            }
+            data.push(id);
+        }
+        return data
+    }
+
+    /*function getMarkedData(form, mark) {
+        const data = [];
+        
+        for (const field of form.querySelectorAll(`[class*="${mark}"]`)) {
+            const id = field.getAttribute('data-id');
+            const name = field.querySelector('.category__name').textContent;
+            const realName = field.getAttribute('data-name');
+            let one = {};
+            if (id) {
+                one['id'] = id;
+                if (realName && name != realName) {
+                    one['become'] = name;
+                }
+            }
+            else {
+                one = name;
+            }
+            data.push(one);
+        }
+        return data;
+    }*/
+    
+    function reject(marked, rejected) {
+        if(!rejected || !rejected.length) return;
+        for (const id of rejected) {
+            const obj = marked.find(id);
+            marked.remove(obj['index']);
+            highlight(categories, obj['field'], 'rejected', conclude_dur); 
+        }
+    }
+
+    function apply(applied) {
+        if(!applied || !applied.length) return;
+        for (const obj of applied) {
+            highlight(categories, obj['field'], 'applied', conclude_dur);
+        }
+    }
+
     categoriesAddModal?.querySelector('.btn-submit').addEventListener('click', async function() {
-        /*const added = getMarkedData(categories, 'to-add');
+        async function sendAndConclude(marked, url, method, data) {
+            const response = await ajax(url, method, data);
+            const rejected = response['message']['rejected']
+            reject(marked, rejected);
+            marked = marked.filter(value => !rejected.includes(value));
+            apply(marked);
+        }
+
+        const added = getMarked(categories, 'to-add');
         if (added.length) {
-            const addedResponse = ajax('/categories/create', 'POST', added);
+            const toSend = {toAdd: getMarkedData(added)};
+            sendAndConclude(added, '/categories', 'POST', toSend);
         }
-        const updated = getMarkedData(categories, 'to-update');
+        const updated = getMarked(categories, 'to-update');
         if (updated.length) {
-            const updatedResponse = ajax('/categories/update', 'PUT', updated);
+            const toSend = {toUpdate: getMarkedData(updated)};
+            sendAndConclude(updated, '/categories', 'PUT', toSend);
         }
-        const deleted = getMarkedData(categories, 'to-delete');
+        const deleted = getMarked(categories, 'to-delete');
         if (deleted.length) {
-            const deletedResponse = ajax('/categories/delete', 'DELETE', deleted);
+            const toDelete = {toDelete: getMarkedData(deleted)};
+            sendAndConclude(deleted, '/categories', 'DELETE', toDelete);
         }
-        const data = {added: added, updated: updated, deleted: deleted};
-        console.log(data);*/
     });
 });

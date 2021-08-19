@@ -17,6 +17,8 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string('name', 100)->unique();
             $table->foreignId('parentCategory')->nullable()->references('id')->on('categories');
+            $table->string('background_color', 24)->default('#FFFFFF');
+            $table->string('font_color', 24)->default('#000000');
         });
     }
 

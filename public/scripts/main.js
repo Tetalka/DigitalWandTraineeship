@@ -159,7 +159,7 @@ window.addEventListener('load', function() {
             const comment = getElement('div', 'col-12 px-0 comment');
             comment.innerHTML = `
             <div class="">
-                <h5>${author}${!approved? ' <span class="text-muted">На модерации</span>' : ''}</h5>
+                <h5>${author}${approved? '' : ' <span class="text-muted">На модерации</span>'}</h5>
                 <h6>${date}</h6>
                 <div class="mt-3">
                     <div class=''>

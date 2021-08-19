@@ -2,6 +2,7 @@
 
 :root {
     --default: rgba(0,0,0,.075);
+    /*--dafauld: #dee2e6;*/
 }
 .text-muted {
     color: var(--gray);
@@ -309,15 +310,52 @@
     cursor: default;
     font-size: 1rem;
     font-weight: normal;
+    border: 1px solid var(--default);
     /*border: 1px solid var(--background-color);
     color: var(--background-color);*/
 }
 .categories-add-modal .category__name:focus {
     cursor: text;
 }
+.categories-add-modal .category__controls .btn {
+    margin: 1px;
+}
 .categories-add-modal .category__controls .btn * {
     width: 14px;
     display: block;
+}
+
+.rejected {
+    /*outline: 2px solid var(--danger);
+    box-shadow: 0 0 10px var(--danger);*/
+    animation: rejected 4s;
+    animation-timing-function: ease-in-out;
+}
+
+.applied {
+    animation: applied 4s;
+    animation-timing-function: ease-in-out;
+}
+@keyframes rejected {
+    4% {
+        box-shadow: 0 0 10px var(--danger);
+        background-color: var(--danger);
+        border-color: var(--danger);
+    }
+    100% {
+        box-shadow: none;
+        background-color: transparent;
+    }
+}
+@keyframes applied {
+    4% {
+        box-shadow: 0 0 10px var(--success);
+        background-color: var(--success);
+        border-color: var(--success);
+    }
+    100% {
+        box-shadow: none;
+    }
 }
 
 @media (min-width: 1440px) {
