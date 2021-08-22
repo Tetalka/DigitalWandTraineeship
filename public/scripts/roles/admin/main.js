@@ -1,9 +1,25 @@
 window.addEventListener('load', function() {
-    const conclude_dur = 3000;
+    const Anim_conclude_dur = 3000;
 
-    const newsAddModal = document.querySelector('.news-add-modal');
-    const newsAddForm = newsAddModal?.querySelector('form');
-    newsAddModal?.querySelector('.btn-submit').addEventListener('click', async function () {
+    const newsAddWindow = document.querySelector('.news-add-window');
+    newsAddWindow?.remove();
+    newsAddWindow.querySelector('[name]').value = '';
+
+    function openAddForm() {
+        function back() {
+            document.querySelector('.page-title').appendChild(btn);
+        }
+
+        const btn = this;
+        const news = document.querySelector('.news');
+        btn.remove();
+        switchWindow(news, newsAddWindow, back);
+    }
+    const newsAddBtn = document.querySelector('.btn-news-add');
+    newsAddBtn.addEventListener('click', openAddForm)
+
+    const newsAddForm = newsAddWindow?.querySelector('form');
+    newsAddWindow?.querySelector('.btn-submit').addEventListener('click', async function () {
         const response = await fileAjax('/news/create', 'POST', newsAddForm);
         if (response['status']) {
             clearInputData(newsAddForm);
@@ -12,7 +28,7 @@ window.addEventListener('load', function() {
         showMessage(response['message']['data'], newsAddForm, 'success', 'success');
     });
 
-    const categoriesPicker = $('.news-add-modal [name="categories[]"]');
+    const categoriesPicker = $(newsAddWindow).find('[name="categories[]"]');
     categoriesPicker?.selectpicker({
         liveSearch: true,
         size: 6,
@@ -185,7 +201,11 @@ window.addEventListener('load', function() {
             let id = field.getAttribute('data-id');
             const name = field.querySelector('.category__name').textContent;
             id = id? id : name;
-            data.push({id: id, field: field});
+            data.push({
+                    id: id,
+                    field: field,
+                    mark: mark
+                });
         }
         return data;
     }
@@ -238,14 +258,24 @@ window.addEventListener('load', function() {
         for (const id of rejected) {
             const obj = marked.find(id);
             marked.remove(obj['index']);
-            highlight(categories, obj['field'], 'rejected', conclude_dur); 
+            highlight(categories, obj['field'], 'rejected', Anim_conclude_dur); 
         }
     }
 
     function apply(applied) {
         if(!applied || !applied.length) return;
         for (const obj of applied) {
-            highlight(categories, obj['field'], 'applied', conclude_dur);
+            const field = obj['field'];
+            highlight(categories, field, 'applied', Anim_conclude_dur);
+            field.classList.remove(obj['mark']);
+        }
+    }
+
+    function updateId(marked, response) {
+        for (let update of response) {
+            const name = update['name'];
+            const id = update['id'];
+            marked[name]['field'].setAttribute('data-id', id);
         }
     }
 
@@ -255,6 +285,7 @@ window.addEventListener('load', function() {
             const rejected = response['message']['rejected']
             reject(marked, rejected);
             marked = marked.filter(value => !rejected.includes(value));
+            if (applied = response['applied']) updateId(marked, applied);
             apply(marked);
         }
 

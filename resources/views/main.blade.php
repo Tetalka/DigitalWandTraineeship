@@ -14,7 +14,7 @@ $title = 'Новости';
 @section('content')
     @if ($user && $user->hasRole('Admin')) 
         @section('page-title')
-            {{ $title }}<div class='btn-add btn-news-add' data-toggle='modal' data-target='.news-add-modal'>
+            {{ $title }}<div class='btn-add btn-news-add'>
         @endsection
     @else 
         @section('page-title')

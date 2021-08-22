@@ -167,6 +167,10 @@ function getIcon(name, html = true) {
             <path d='m352 153.037h-275.873l85.103-85.927-28.42-28.147-132.789 134.074 132.79 134.073 28.42-28.147-85.102-85.926h275.871c66.168 0 
             120 53.832 120 120s-53.832 120-120 120h-352v40h352c88.224 0 160-71.776 160-160s-71.776-160-160-160z'/>
         </svg>`,
+    'back': `
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>`,
     'delete': 
         `<svg class='bi flex-shrink-0' width='24' height='24' viewBox='0 0 16 16' fill='currentColor'>
             <path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/>
@@ -211,4 +215,22 @@ function reg(input, onEnter = null) {
             }
         });
     }
+}
+
+function switchWindow(curWindow, newWindow, backCallback) {
+    function back() {
+        newWindow.remove();
+        curWindow.classList.remove('d-none');
+        if (backCallback) backCallback();
+        this.remove();
+    }
+
+    const parent = curWindow.parentNode;
+    const btnReturn = getElement('button', 'btn btn-return');
+    btnReturn.title = 'Вернуться';
+    btnReturn.innerHTML = getIcon('back', true);
+    btnReturn.addEventListener('click', back);
+    curWindow.classList.add('d-none');
+    parent.querySelector('.page-title').appendChild(btnReturn);
+    parent.appendChild(newWindow);
 }

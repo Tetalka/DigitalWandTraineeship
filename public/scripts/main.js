@@ -101,22 +101,19 @@ window.addEventListener('load', function() {
             }
         }
         function open() {
+
+            function back() {
+                clearInputData(commentForm);
+                comments.innerHTML = '';
+                commentForm.querySelector('.btn-submit')?.removeEventListener('click', sendComment);
+            }
+
             itemPage.querySelector('.news-item__footer').appendChild(commentForm);
             commentForm.querySelector('.btn-submit')?.addEventListener('click', sendComment);
 
             itemPage.appendChild(comments);
             
-            news.classList.add('d-none');
-            const btnReturn = getElement('button', 'btn btn-return');
-            btnReturn.title = 'Вернуться';
-            btnReturn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-            </svg>`
-            btnReturn.addEventListener('click', back);
-            const main = news.parentNode;
-            main.querySelector('.page-title').appendChild(btnReturn);
-            main.appendChild(itemPage);
+            switchWindow(news, itemPage, back);
             
             window.addEventListener('scroll', isFooter);
             function isFooter() {
@@ -143,14 +140,6 @@ window.addEventListener('load', function() {
                     comments.appendChild(comment);
                 }
             }
-        }
-        function back() {
-            clearInputData(commentForm);
-            comments.innerHTML = '';
-            this.remove();
-            itemPage.remove();
-            commentForm.querySelector('.btn-submit')?.removeEventListener('click', sendComment);
-            news.classList.remove('d-none');
         }
         function clearCommentMessage() {
             comments.querySelector('.comment-message')?.remove();
