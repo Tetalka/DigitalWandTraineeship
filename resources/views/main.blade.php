@@ -5,6 +5,7 @@ use App\Models\Category;
     
 $news = NewsItem::get();
 $user = User::hasAuthorize();
+$admin = $user && $user->hasRole('Admin');
 $categories = Category::get();
 $title = 'Новости';
 ?>
@@ -12,7 +13,7 @@ $title = 'Новости';
 @extends('layout.master')
 
 @section('content')
-    @if ($user && $user->hasRole('Admin')) 
+    @if ($admin) 
         @section('page-title')
             {{ $title }}<div class='btn-add btn-news-add'>
         @endsection
@@ -26,7 +27,21 @@ $title = 'Новости';
             <div class='col-12 col-md-6 px-3 news-item-wrap'>
                 <div class='card news-item shadow-sm' data-id='{{ $news_item->id }}'>
                     <div class='news-item__head no-wrap'>
-                        <div class='news-item__title-wrap interactable'><h3 class='news-item__title text-truncate'>{{ $news_item->title }}</h3></div>
+                        <div class='news-item__title-wrap'>
+                            <h3 class='news-item__title text-truncate interactable'>{{ $news_item->title }}</h3>
+                            @if ($admin)
+                            <div class='btn-group ml-2 news-item__actions'>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-success" data-toggle="dropdown">
+                                        <i class='bi bi-three-dots'></i>
+                                    </button>
+                                    <div class="dropdown-menu font-italic">
+                                        <button class="dropdown-item btn btn-outline-warning btn-edit"><i class='bi bi-pencil'></i>Изменить</button>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
                         <div class='news-item__subtitle-wrap text-muted interactable'><strong class='news-item__subtitle text-truncate'>{{ $news_item->subtitle }}</strong></div>
                         <div class='news-item__categories text-muted text-truncate'>
                         @foreach ($news_item->categories as $category)
@@ -68,7 +83,7 @@ $title = 'Новости';
 @endsection
 
 @section('modals')
-        @if ($user && $user->hasRole('Admin')) 
+        @if ($admin) 
             @include('forms.news-add')
             @include('forms.categories-add')
         @else 
@@ -78,7 +93,7 @@ $title = 'Новости';
 @endsection
 
 @section('scripts')
-    @if ($user && $user->hasRole('Admin')) 
+    @if ($admin) 
         <script src='/scripts/roles/admin/main.js'></script>
         <script src='https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js'></script>
     @endif

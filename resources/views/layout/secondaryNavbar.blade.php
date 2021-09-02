@@ -1,19 +1,18 @@
-<div class='navbar navbar-dark navbar-expand-lg navbar-vertical' id='nav-vertical'>
+<?php 
+$admin = $user && $user->hasRole('Admin');
+?>
+<div class='navbar navbar-dark navbar-expand-lg navbar-vertical' id='nav-vertical' style='--role: {{ $admin? "var(--success)": "var(--warning)"}}'>
     <button class="navbar-toggler navbar-vertical-btn" data-toggle="collapse" data-target="#nav-vertical" aria-controls="nav-vertical" aria-expanded="false" aria-label="Переключатель навигации">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class='collapse navbar-collapse w-100'>
         <div class=''>
-            <?php
-                
-                if ($user && $user->hasRole('Admin')) {
-                    echo "<h3 class='d-flex'>Категории<div class='btn-add btn-add-light btn-categories-add' data-toggle='modal' data-target='.categories-add-modal'></h3>";
-                }
-                else {
-                    echo "<h3>Категории</h3>";
-                }
-            ?>
+                @if ($admin)
+                    <h3 class='d-flex'>Категории<div class='btn-add btn-add-light btn-categories-add' data-toggle='modal' data-target='.categories-add-modal'></h3>
+                @else 
+                    <h3>Категории</h3>
+                @endif
             <div class='categories'>
                 @foreach ($categories as $category)
                     <div class='badge category border' 
@@ -26,7 +25,7 @@
                 @endforeach
             </div>
         </div>
-        @if ($user && $user->hasRole('Admin'))
+        @if ($admin)
             <div class='my-4 border-top'></div>
             <div>
                 @if (Route::currentRouteName() == 'news.comments.moderate')

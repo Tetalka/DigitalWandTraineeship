@@ -65,6 +65,8 @@ window.addEventListener('load', function() {
 
         const itemPage = item.cloneNode(true);
         const pageId = itemPage.getAttribute('data-id');
+        const actions = itemPage.querySelector('.news-item__actions');
+        actions?.remove();
         itemPage.classList.add('news-item_opened');
         const categories = itemPage.querySelector('.news-item__categories');
         //categories.remove();
@@ -106,7 +108,10 @@ window.addEventListener('load', function() {
                 clearInputData(commentForm);
                 comments.innerHTML = '';
                 commentForm.querySelector('.btn-submit')?.removeEventListener('click', sendComment);
+                btnAdd && document.querySelector('.page-title').appendChild(btnAdd);
             }
+            const btnAdd = document.querySelector('.btn-news-add');
+            const title = itemPage.querySelector('.news-item__title');
 
             itemPage.querySelector('.news-item__footer').appendChild(commentForm);
             commentForm.querySelector('.btn-submit')?.addEventListener('click', sendComment);
@@ -114,6 +119,9 @@ window.addEventListener('load', function() {
             itemPage.appendChild(comments);
             
             switchWindow(news, itemPage, back);
+            btnAdd?.remove();
+            title.classList.add('d-flex', 'align-items-center');
+            actions && title.appendChild(actions);
             
             window.addEventListener('scroll', isFooter);
             function isFooter() {
