@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class NewsController extends Controller
 {
     public function create(Request $request) {
-
+        
         $user = User::hasAuthorize();
         if (!$user) {
             return response([], 403);
@@ -56,6 +56,51 @@ class NewsController extends Controller
             return response(['data'=>['Новость добавлена']]);
         }
         return response(['errors'=>['Не удалось добавить новость']], 500);
+        
+    }
+
+    public function update(Request $request) {
+
+        $user = User::hasAuthorize();
+        if (!$user) {
+            return response([], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'title'=>'sometimes|required',// ??? excluded if
+            'subtitle'=>'sometimes|required',
+            'image'=>'sometimes|required|file|image|dimensions:min_width=500,min_height=240|max:4096',
+            'categories'=> 'sometimes|required|array|min:1',
+            'text'=>'sometimes|required|min:600'
+        ], [
+            'image.required'=>'Необходимо выбрать файл',
+            'image.dimensions'=>'Размер изображения должен быть от :min_widthx:min_height пикселей',
+        ]);
+
+        if(!$validator->passes()) {
+            return response(['errors'=>$validator->errors()->toArray()], 400);
+        }
+
+        //frontend: flag new_image
+        /*if ($request->newImage)
+        $image = $request->image->move(public_path('images'), rand().'.'.$request->image->extension());*/
+        
+
+        $news_item = NewsItem::find($request->id);
+        dd($news_item);
+        /*$news_item->title = $request->title ? $request->title :  $news_item->title;
+        $news_item->titleComment = $request->subtitle && $request->subtitle;
+        if ($request->categories) $news_item->categories()->attach($request->categories);
+        $news_item->image = $image && $image->getFilename();
+        $news_item->description = $request->text;
+        $news_item->author = $user->id;
+
+        $created = $news_item->save();
+        if($created) {
+            return response(['data'=>['Новость добавлена']]);
+        }
+        return response(['errors'=>['Не удалось добавить новость']], 500);*/
     }
 
     public function newComment(Request $request) {

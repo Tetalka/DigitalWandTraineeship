@@ -27,10 +27,11 @@ function getInputData(form) {
 function clearInputData(form) {
     for (const input of form.querySelectorAll('[name]')) {
         input.value = '';
-        input.textContent = '';
-        if(input.selectpicker) {
-            input.selectpicker('refresh');
+        if($(input).selectpicker) {
+            $(input).selectpicker('refresh');
+            continue;
         }
+        input.textContent = '';
     }
 }
 

@@ -36,7 +36,7 @@ $title = 'Новости';
                                         <i class='bi bi-three-dots'></i>
                                     </button>
                                     <div class="dropdown-menu font-italic">
-                                        <button class="dropdown-item btn btn-outline-warning btn-edit"><i class='bi bi-pencil'></i>Изменить</button>
+                                        <button class="dropdown-item btn btn-outline-warning news-item__action btn-edit"><i class='bi bi-pencil'></i>Изменить</button>
                                     </div>
                                 </div>
                             </div>
@@ -46,6 +46,7 @@ $title = 'Новости';
                         <div class='news-item__categories text-muted text-truncate'>
                         @foreach ($news_item->categories as $category)
                             <div class='badge news-item__category'
+                                data-id='{{ $category->id }}'
                                 style='
                                 --background-color: {{ $category->background_color }};
                                 --font-color: {{ $category->font_color }};'
@@ -57,7 +58,7 @@ $title = 'Новости';
                     </div>
                     <div class='news-item__content'>
                         <div class='news-item__image-wrap interactable'>
-                            <img src='images/{{ $news_item->image }}' class='img-fluid'>
+                            <img src='images/{{ $news_item->image }}' class='img-fluid news-item__image'>
                         </div>
                         <div class='w-100 news-item__text text-truncate'>
                             {{ $news_item->description }}
@@ -94,7 +95,7 @@ $title = 'Новости';
 
 @section('scripts')
     @if ($admin) 
-        <script src='/scripts/roles/admin/main.js'></script>
         <script src='https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js'></script>
+        <script src='/scripts/roles/admin/main.js'></script>
     @endif
 @endsection

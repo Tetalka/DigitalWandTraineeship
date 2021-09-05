@@ -1,34 +1,21 @@
 window.addEventListener('load', function() {
     const Anim_conclude_dur = 3000;
 
+    async function sendForm(url, method) {
+            const response = await fileAjax(url, method, newsAddForm);
+            showErrors(response['message']['errors'], newsAddForm);
+            showMessage(response['message']['data'], newsAddForm, 'success', 'success');
+            return response['status'];
+    }
+    const news = document.querySelector('.news');
     const newsAddWindow = document.querySelector('.news-add-window');
     newsAddWindow?.remove();
     newsAddWindow.querySelector('[name]').value = '';
-
-    function openAddForm() {
-        function back() {
-            document.querySelector('.page-title').appendChild(btn);
-        }
-
-        const btn = this;
-        const news = document.querySelector('.news');
-        btn.remove();
-        switchWindow(news, newsAddWindow, back);
-    }
-    const newsAddBtn = document.querySelector('.btn-news-add');
-    newsAddBtn.addEventListener('click', openAddForm)
-
     const newsAddForm = newsAddWindow?.querySelector('form');
-    newsAddWindow?.querySelector('.btn-submit').addEventListener('click', async function () {
-        const response = await fileAjax('/news/create', 'POST', newsAddForm);
-        if (response['status']) {
-            clearInputData(newsAddForm);
-        }
-        showErrors(response['message']['errors'], newsAddForm);
-        showMessage(response['message']['data'], newsAddForm, 'success', 'success');
-    });
-
-    const categoriesPicker = $(newsAddWindow).find('[name="categories[]"]');
+    const newsAddBtn = document.querySelector('.btn-news-add');
+    const newsSubmitBtn = newsAddWindow?.querySelector('.btn-submit');
+    const categoriesSelect = newsAddWindow.querySelector('[name="categories[]"]');
+    const categoriesPicker = $(categoriesSelect);
     categoriesPicker?.selectpicker({
         liveSearch: true,
         size: 6,
@@ -48,6 +35,145 @@ window.addEventListener('load', function() {
         style: 'btn-default border'
     });
 
+    function resetPreviewCategories() {
+        for (const cat of preview_categories.querySelectorAll(ni['category'])) {
+            cat.remove();
+        }
+    }
+    function resetPreview() {
+        preview_title.textContent = '';
+        preview_subtitle.textContent = '';
+        resetPreviewCategories();
+        preview_image.src = '';
+        preview_text.textContent = '';
+    }
+    function getCategory(name, backgr, color) {
+        return fromHTML(`
+        <div class='badge news-item__category'
+        style='
+        --background-color: ${backgr};
+        --font-color: ${color};'
+        >
+        ${name}
+        </div>
+        `);
+    }
+    function catMatch() {
+        resetPreviewCategories();
+        for (let cat of catpicker.val()) {
+            cat = categoriesSelect[cat-1];
+            const category = getCategory(cat.textContent, cat.getAttribute('data-background'), cat.getAttribute('data-color'));
+            preview_categories.appendChild(category);
+        }
+    }
+    const ni = { //news item
+        'title': '.news-item__title',
+        'subtitle': '.news-item__subtitle',
+        'categories': '.news-item__categories',
+        'category': '.news-item__category',
+        'image': '.news-item__image',
+        'text': '.news-item__text',
+    };
+    const newTitle = newsAddForm.querySelector('[name="title"]');
+    const newSubtitle = newsAddForm.querySelector('[name="subtitle"]');
+    const catpicker = categoriesPicker;
+    const newImage = newsAddForm.querySelector('[name="image"]');
+    const newText = newsAddForm.querySelector('[name="text"]');
+
+    const preview = newsAddForm.querySelector('.preview');
+    const preview_title = preview.querySelector(ni['title']);
+    const preview_subtitle = preview.querySelector(ni['subtitle']);
+    const preview_categories = preview.querySelector(ni['categories']);
+    const preview_image = preview.querySelector(ni['image']);
+    const preview_text = preview.querySelector(ni['text']);
+
+    newTitle.addEventListener('input', function() {
+        preview_title.textContent = this.value;
+    });
+    newSubtitle.addEventListener('input', function() {
+        preview_subtitle.textContent = this.value;
+    });
+    catpicker.on('changed.bs.select', catMatch);
+    //image
+    newText.addEventListener('input', function() {
+        preview_text.textContent = this.value;
+    });
+
+    //ДОБАВЛЕНИЕ НОВОСТИ
+    function openAddForm() {
+        function back() {
+            document.querySelector('.page-title').appendChild(btn);
+            newsSubmitBtn.removeEventListener('click', send);
+        }
+        async function send() {
+            const status = await sendForm('/news/create', 'POST');
+            if(status) clearInputData(this);
+        }
+        
+        const btn = this;
+        btn.remove();
+        switchWindow(news, newsAddWindow, back);
+
+        newsAddWindow.querySelector('.title').textContent = 'Новая новость';
+        newsSubmitBtn.addEventListener('click', send);
+    }
+
+    newsAddBtn.addEventListener('click', openAddForm);
+
+    //ИЗМЕНЕНИЕ НОВОСТИ
+    function openEditForm() {
+        function back() {
+            document.querySelector('.page-title').appendChild(newsAddBtn);
+            newsSubmitBtn.removeEventListener('click', send);
+            clearInputData(newsAddForm);
+            resetPreview();
+        }
+        async function send() {
+            const status = await sendForm('/news', 'PUT');
+            //if(status)
+        }
+        
+        newsAddBtn.remove();
+        switchWindow(news, newsAddWindow, back);
+
+        newsAddWindow.querySelector('.title').textContent = 'Редактирование новости';
+        newsSubmitBtn.addEventListener('click', send);
+
+    }
+    for (const item of news.querySelectorAll('.news-item')) {
+        const actions = item.querySelector('.news-item__actions');
+        const edit = actions.querySelector('.btn-edit');
+
+        function editItem() {
+            const title = item.querySelector(ni['title']);
+            const subtitle = item.querySelector(ni['subtitle']);
+            const categories = item.querySelectorAll(ni['category']);
+            const image = item.querySelector(ni['image']);
+            const text = item.querySelector(ni['text']);
+
+            clearInputData(newsAddForm);
+            openEditForm.call(this);
+            newTitle.value = title.textContent;
+            newSubtitle.value = subtitle.textContent;
+            let ids = [];
+            for (const category of categories) {
+                ids.push(+category.getAttribute('data-id'));
+            }
+            catpicker.selectpicker('val', ids);
+            //image
+            newText.value = text.textContent;
+
+            preview_title.textContent = title.textContent;
+            preview_subtitle.textContent = subtitle.textContent;
+            catMatch();
+            preview_image.src = image.src;
+            preview_text.textContent = text.textContent;
+        }
+
+        edit.addEventListener('click', editItem);
+    }
+
+    //CRUD КАТЕГОРИЙ
     const categoriesAddModal = document.querySelector('.categories-add-modal');
     const categoriesAddForm = categoriesAddModal?.querySelector('.categories-add-form');
     const categories = categoriesAddModal?.querySelector('.categories');

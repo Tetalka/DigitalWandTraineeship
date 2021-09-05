@@ -44,6 +44,7 @@ Route::prefix('user')->group(function () {
 
 Route::prefix('news')->group(function () {
     Route::post('create', [NewsController::class, 'create']);
+    Route::put('/', [NewsController::class, 'update']);
     Route::prefix('comments')->group(function () {
         Route::prefix('moderate')->group(function () {
             Route::get('/', function() {
@@ -67,7 +68,7 @@ Route::prefix('news')->group(function () {
             }
             //$comments = News::where('id', '=', $id)->with('comments')->get();
             //$comments = $new_item->comments()->get(['author', 'text', 'created_at']);
-            $comments = $newsItem->comments()->get();
+            $comments = $newsItem->comments()->latest()->get();
 
             $return = [];
             
