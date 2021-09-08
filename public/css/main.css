@@ -170,11 +170,12 @@
     top: 120px;
     background-color: var(--white);
     padding: 0.75rem var(--px-padding);
+    z-index: 9;
 }
 .news-item__title-wrap {
     display: flex;
 }
-.news-item__title-wrap .btn-edit {
+.news-item__title-wrap .news-item__action {
     height: 30px;
     line-height: 1;
     font-style: italic;

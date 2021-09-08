@@ -96,8 +96,7 @@ window.addEventListener('load', function() {
             this.textContent = text;
             if (response['status']) {
                 let username = document.querySelector('.user').getAttribute('data-name');
-                const date = new Date(response['message']['date']).format('dd.mm.yyyy HH:MM:ss');
-                comment = createComment(username, data['text'], date, response['message']['approved']);
+                comment = createComment(username, data['text'], data['date'], response['message']['approved']);
                 clearCommentMessage();
                 comments.prepend(comment);
             }
@@ -143,8 +142,7 @@ window.addEventListener('load', function() {
                     comments.appendChild(message);
                 }
                 for (const data of response['message']) {
-                    const date = new Date(data['date']).format('dd.mm.yyyy HH:MM:ss');
-                    const comment = createComment(data['author'], data['text'], date);
+                    const comment = createComment(data['author'], data['text'], data['date']);
                     comments.appendChild(comment);
                 }
             }
@@ -152,12 +150,58 @@ window.addEventListener('load', function() {
         function clearCommentMessage() {
             comments.querySelector('.comment-message')?.remove();
         }
-        function createComment(author, text, date, approved = true) {
+        function wordDate(rowDate) {
+            const date = new Date(rowDate);
+            const now = new Date();
+            const monthDays = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+            const words = [//Вплоть до секунд, но нужно тогда обновлять
+                {
+                    'count': 60,
+                    'word': ['', 'секунды', 'секунд'],
+                },
+                {
+                    'count': 60,
+                    'word': ['Минута', 'минуты', 'минут'],
+                },
+                {
+                    'count': 24,
+                    'word': ['Час', 'часа', 'часов'],
+                },
+                {
+                    'count': monthDays,
+                    'word': ['День', 'дня', 'дней'],
+                },
+                {
+                    'count': 12,
+                    'word': ['Месяц', 'месяца', 'месяцев'],
+                },
+                {
+                    'count': 0,
+                    'word': ['Год', 'года', 'лет'],
+                },
+            ];
+            let diff = Math.round(now.getTime()/1000 - date.getTime()/1000);
+            if (diff <= 5) return 'Только что';
+            for (const hit of words) {
+                if (hit.count > diff) {
+                    if (diff == 1) return `${hit.word[0]} назад`;
+                    const number = diff%10;
+                    let word = '';
+                    if (number < 5 && (diff < 10 || diff > 21)) word = hit.word[1];
+                    else word = hit.word[2];
+                    return `${diff} ${word} назад`
+                }
+                diff = Math.trunc(diff/hit.count);
+            }
+        }
+        function createComment(author, text, rowDate, approved = true) {
             const comment = getElement('div', 'col-12 px-0 comment');
+            const date = new Date(rowDate).format('dd.mm.yyyy HH:MM:ss');
+            const dateTitle = wordDate(rowDate);
             comment.innerHTML = `
             <div class="">
                 <h5>${author}${approved? '' : ' <span class="text-muted">На модерации</span>'}</h5>
-                <h6>${date}</h6>
+                <h6 title=${date}>${dateTitle}</h6>
                 <div class="mt-3">
                     <div class=''>
                         <div class="comment__text" name="text">${text}</div>

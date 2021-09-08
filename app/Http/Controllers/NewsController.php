@@ -12,9 +12,8 @@ use Illuminate\Http\Request;
 class NewsController extends Controller
 {
     public function create(Request $request) {
-        
         $user = User::hasAuthorize();
-        if (!$user) {
+        if (!$user || !$user->hasRole('Admin')) {
             return response([], 403);
         }
 
@@ -38,21 +37,21 @@ class NewsController extends Controller
         if(!$validator->passes()) {
             return response(['errors'=>$validator->errors()->toArray()], 400);
         }
-
         //$image = Storage::putFile('public/images', $request->image, 'public');
         $image = $request->image->move(public_path('images'), rand().'.'.$request->image->extension());
         
 
         $news_item = new NewsItem;
         $news_item->title = $request->title;
-        $news_item->titleComment = $request->subtitle;
-        $news_item->categories()->attach($request->categories);
+        $news_item->subtitle = $request->subtitle;
         $news_item->image = $image->getFilename();
         $news_item->description = $request->text;
         $news_item->author = $user->id;
 
         $created = $news_item->save();
         if($created) {
+            $news_item->categories()->attach($request->categories);
+            $created = $news_item->save();
             return response(['data'=>['Новость добавлена']]);
         }
         return response(['errors'=>['Не удалось добавить новость']], 500);
@@ -60,19 +59,17 @@ class NewsController extends Controller
     }
 
     public function update(Request $request) {
-
         $user = User::hasAuthorize();
-        if (!$user) {
+        if (!$user || !$user->hasRole('Admin')) {
             return response([], 403);
         }
 
         $validator = Validator::make($request->all(), [
-            'id' => 'required',
-            'title'=>'sometimes|required',// ??? excluded if
-            'subtitle'=>'sometimes|required',
+            'title'=>'required',// ??? excluded if ??? sometimes
+            'subtitle'=>'required',
             'image'=>'sometimes|required|file|image|dimensions:min_width=500,min_height=240|max:4096',
-            'categories'=> 'sometimes|required|array|min:1',
-            'text'=>'sometimes|required|min:600'
+            'categories'=> 'required|array|min:1',
+            'text'=>'required|min:600'
         ], [
             'image.required'=>'Необходимо выбрать файл',
             'image.dimensions'=>'Размер изображения должен быть от :min_widthx:min_height пикселей',
@@ -83,29 +80,56 @@ class NewsController extends Controller
         }
 
         //frontend: flag new_image
-        /*if ($request->newImage)
-        $image = $request->image->move(public_path('images'), rand().'.'.$request->image->extension());*/
-        
+        $image = null;
+        if ($request->image)
+        $image = $request->image->move(public_path('images'), rand().'.'.$request->image->extension());
 
         $news_item = NewsItem::find($request->id);
-        dd($news_item);
-        /*$news_item->title = $request->title ? $request->title :  $news_item->title;
-        $news_item->titleComment = $request->subtitle && $request->subtitle;
-        if ($request->categories) $news_item->categories()->attach($request->categories);
-        $news_item->image = $image && $image->getFilename();
-        $news_item->description = $request->text;
-        $news_item->author = $user->id;
-
-        $created = $news_item->save();
-        if($created) {
-            return response(['data'=>['Новость добавлена']]);
+        if (!$news_item) return abort(404);
+        if ($request->title) $news_item->title = $request->title;
+        if ($request->subtitle) $news_item->subtitle = $request->subtitle;
+        if ($request->categories) {
+            $toAdd = collect([]);
+            $categories = $news_item->categories();
+            foreach($request->categories as $cat) {
+                $contain = false;
+                foreach($categories->get() as $itemCat) {
+                    if ($itemCat->id == $cat) {
+                        $contain = true;
+                        break;
+                    }
+                }
+                if (!$contain) $toAdd->push($cat);
+            }
+            $categories->attach($toAdd);
         }
-        return response(['errors'=>['Не удалось добавить новость']], 500);*/
+        if ($image) $news_item->image = $image->getFilename();
+        if ($request->text) $news_item->description = $request->text;
+        $updated = $news_item->save();
+        if($updated) {
+            return response(['data'=>['Новость обновлена']]);
+        }
+        return response(['errors'=>['Не удалось обновить новость']], 500);
+    }
+
+    public function delete(Request $request) {
+        $user = User::hasAuthorize();
+        if (!$user || !$user->hasRole('Admin')) {
+            return response([], 403);
+        }
+
+        $news_item = NewsItem::find($request->id);
+        if (!$news_item) return abort(404);
+        $deleted = $news_item->delete();
+        if($deleted) {
+            return response([]);
+        }
+        return response(['errors'=>['Не удалось удалить новость']], 500);
     }
 
     public function newComment(Request $request) {
         $user = User::hasAuthorize();
-        if (!$user) {
+        if (!$user || !$user->hasRole('Admin')) {
             return response([], 403);
         }
 

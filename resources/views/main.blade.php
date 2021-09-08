@@ -36,7 +36,8 @@ $title = 'Новости';
                                         <i class='bi bi-three-dots'></i>
                                     </button>
                                     <div class="dropdown-menu font-italic">
-                                        <button class="dropdown-item btn btn-outline-warning news-item__action btn-edit"><i class='bi bi-pencil'></i>Изменить</button>
+                                        <button class="dropdown-item btn btn-outline-warning news-item__action btn-edit"><i class='bi bi-pencil'></i> Изменить</button>
+                                        <button class="dropdown-item btn btn-outline-warning news-item__action btn-delete"><i class="bi bi-x-circle"></i> Удалить</button>
                                     </div>
                                 </div>
                             </div>

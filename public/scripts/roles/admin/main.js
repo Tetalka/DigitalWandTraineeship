@@ -107,7 +107,7 @@ window.addEventListener('load', function() {
         }
         async function send() {
             const status = await sendForm('/news/create', 'POST');
-            if(status) clearInputData(this);
+            if(status) clearInputData(newsAddForm);
         }
         
         const btn = this;
@@ -121,7 +121,7 @@ window.addEventListener('load', function() {
     newsAddBtn.addEventListener('click', openAddForm);
 
     //ИЗМЕНЕНИЕ НОВОСТИ
-    function openEditForm() {
+    function openEditForm(id) {
         function back() {
             document.querySelector('.page-title').appendChild(newsAddBtn);
             newsSubmitBtn.removeEventListener('click', send);
@@ -129,7 +129,7 @@ window.addEventListener('load', function() {
             resetPreview();
         }
         async function send() {
-            const status = await sendForm('/news', 'PUT');
+            const status = await sendForm(`/news/update/${id}`, 'POST');
             //if(status)
         }
         
@@ -141,10 +141,13 @@ window.addEventListener('load', function() {
 
     }
     for (const item of news.querySelectorAll('.news-item')) {
+        const id = item.getAttribute('data-id');
         const actions = item.querySelector('.news-item__actions');
         const edit = actions.querySelector('.btn-edit');
+        const delet = actions.querySelector('.btn-delete');
 
         function editItem() {
+            
             const title = item.querySelector(ni['title']);
             const subtitle = item.querySelector(ni['subtitle']);
             const categories = item.querySelectorAll(ni['category']);
@@ -152,7 +155,7 @@ window.addEventListener('load', function() {
             const text = item.querySelector(ni['text']);
 
             clearInputData(newsAddForm);
-            openEditForm.call(this);
+            openEditForm.call(this, id);
             newTitle.value = title.textContent;
             newSubtitle.value = subtitle.textContent;
             let ids = [];
@@ -170,7 +173,24 @@ window.addEventListener('load', function() {
             preview_text.textContent = text.textContent;
         }
 
+            //УДАЛЕНИЕ НОВОСТЕЙ
+            async function deleteItem() {
+                const confirm = prompt('Подтвердите удаление, введя УДАЛИТЬ');
+                if (confirm == 'УДАЛИТЬ') {
+                    const response = await ajax(`news/${id}`, 'DELETE');
+                    if (response['status']) {
+                        const alert = showMessage('Новость удалёна', null, 'danger', 'success');
+                        const div = alert.firstChild;
+                        div.classList.add('justify-content-center');
+                        alert.classList.add('h-100');
+                        div.classList.add('h-100');
+                        item.replaceWith(alert);
+                    }
+                }
+            }
+
         edit.addEventListener('click', editItem);
+        delet.addEventListener('click', deleteItem);
     }
 
     //CRUD КАТЕГОРИЙ

@@ -39,6 +39,7 @@ class AuthorizationController extends Controller
             return response(['errors'=>'Неправильный логин или пароль'], 400);
         }
 
+        $test = UserCookies::where('userId', '=', $user->id)->delete();
         $nameCrypt = Crypt::encrypt($user->name);
         Cookie::queue($cookieLogin, $nameCrypt, 60*24);
         $update = UserCookies::upsert([

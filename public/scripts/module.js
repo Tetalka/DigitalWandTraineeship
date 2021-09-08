@@ -35,15 +35,16 @@ function clearInputData(form) {
     }
 }
 
-async function ajax(url, method, data) {
-    const response = await fetch(url, {
+async function ajax(url, method, data = null) {
+    const headers = {
         method: method,
         headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
-    });
+    };
+    if (data) headers['body'] = JSON.stringify(data);
+    const response = await fetch(url, headers);
     return {
         'status': response.ok,
         'message': await response?.json()

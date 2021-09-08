@@ -44,7 +44,8 @@ Route::prefix('user')->group(function () {
 
 Route::prefix('news')->group(function () {
     Route::post('create', [NewsController::class, 'create']);
-    Route::put('/', [NewsController::class, 'update']);
+    Route::delete('{id}', [NewsController::class, 'delete']);
+    Route::post('update/{id}', [NewsController::class, 'update']);
     Route::prefix('comments')->group(function () {
         Route::prefix('moderate')->group(function () {
             Route::get('/', function() {
