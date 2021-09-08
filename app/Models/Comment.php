@@ -4,6 +4,7 @@ namespace App\Models;
 
 //use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -19,7 +20,7 @@ class Comment extends Model
         return $this->created_at->format('Y-m-d H:i:s');
     }*/
     
-   /*
+    /*
     * Get the news item the comment attached to
     *
     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -30,22 +31,14 @@ class Comment extends Model
 
     }
 
-   /*А оно надо?
+    /*
     * Get the author of the Comment
     *
-    * @return \Illuminate\Database\Eloquent\Relations\HasOne
+    * @return App\Models\User
     */
     public function author() {
 
-        return $this->newsItem()->author();
-        return $this->hasOneThrough(
-            User::class,
-            NewsItem::class,
-            'id',
-            'id',
-            'id',
-            'author'
-        )->get()->first();
+        return User::find($this->author);
 
     }
 }

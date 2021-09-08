@@ -84,13 +84,15 @@ class User extends Authenticatable
     *
     * @return App\Models\User or null
     */
-    public static function hasAuthorize() {
+    public static function hasAuthorize($role = null) {
 
         $logined = UserCookies::where('crypt', '=', Cookie::get('login'))->where('expire', '>', Carbon::now())->first();
         if (!$logined) {
             return null;
         }
-        return User::find($logined->userId);
+        $user = User::find($logined->userId);
+        if ($role) return $user->hasRole($role)? $user : false;
+        return $user;
 
     }
 }

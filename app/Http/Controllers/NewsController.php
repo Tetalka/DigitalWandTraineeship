@@ -12,10 +12,8 @@ use Illuminate\Http\Request;
 class NewsController extends Controller
 {
     public function create(Request $request) {
-        $user = User::hasAuthorize();
-        if (!$user || !$user->hasRole('Admin')) {
-            return response([], 403);
-        }
+        $user = User::hasAuthorize('Admin');
+        if (!$user) return response([], 403);
 
         $validator = Validator::make($request->all(), [
             'title'=>'required',
@@ -59,10 +57,8 @@ class NewsController extends Controller
     }
 
     public function update(Request $request) {
-        $user = User::hasAuthorize();
-        if (!$user || !$user->hasRole('Admin')) {
-            return response([], 403);
-        }
+        $user = User::hasAuthorize('Admin');
+        if (!$user) return response([], 403);
 
         $validator = Validator::make($request->all(), [
             'title'=>'required',// ??? excluded if ??? sometimes
@@ -113,25 +109,23 @@ class NewsController extends Controller
     }
 
     public function delete(Request $request) {
-        $user = User::hasAuthorize();
-        if (!$user || !$user->hasRole('Admin')) {
-            return response([], 403);
-        }
+        $user = User::hasAuthorize('Admin');
+        if (!$user) return response([], 403);
 
         $news_item = NewsItem::find($request->id);
         if (!$news_item) return abort(404);
+        $image = $news_item->image;
         $deleted = $news_item->delete();
         if($deleted) {
+            //!!! Проверить картинку и удалить
             return response([]);
         }
         return response(['errors'=>['Не удалось удалить новость']], 500);
     }
 
     public function newComment(Request $request) {
-        $user = User::hasAuthorize();
-        if (!$user || !$user->hasRole('Admin')) {
-            return response([], 403);
-        }
+        $user = User::hasAuthorize('Admin');
+        if (!$user) return response([], 403);
 
         $validator = Validator::make($request->all(), [
             'text'=>'required|max:999',

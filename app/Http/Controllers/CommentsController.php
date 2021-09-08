@@ -11,10 +11,8 @@ class CommentsController extends Controller
 
     public function reject(Request $request) {
 
-        $user = User::hasAuthorize();
-        if (!$user) {
-            return abort(403);
-        }
+        $user = User::hasAuthorize('Admin');
+        if (!$user) return response([], 403);
         
         $comment = Comment::find($request->id);
         $rejected = $comment->delete();
@@ -27,10 +25,8 @@ class CommentsController extends Controller
 
     public function approve(Request $request) {
 
-        $user = User::hasAuthorize();
-        if (!$user) {
-            return abort(403);
-        }
+        $user = User::hasAuthorize('Admin');
+        if (!$user) return response([], 403);
 
         $comment = Comment::find($request->id);
         $comment->approved = true;

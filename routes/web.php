@@ -50,10 +50,8 @@ Route::prefix('news')->group(function () {
         Route::prefix('moderate')->group(function () {
             Route::get('/', function() {
 
-                $user = User::hasAuthorize();
-                if (!$user) {
-                    return abort(403);
-                }
+                $user = User::hasAuthorize('Admin');
+                if (!$user) return response([], 403);
                 return view('comments-moderate', compact('user'));
 
             })->name('news.comments.moderate');
@@ -75,7 +73,7 @@ Route::prefix('news')->group(function () {
             
             foreach($comments as $comment) {
                 array_push($return, [
-                    'author' => $comment->author()->name, // Лучше, наверное, через select и join //Да, лучше
+                    'author' => $comment->author()->name, //!!! Лучше, наверное, через select и join //Да, лучше
                     'text' => $comment->text,
                     'date' => $comment->created_at,
                 ]);
