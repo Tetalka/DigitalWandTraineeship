@@ -6,6 +6,7 @@ use Validator;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\NewsItem;
+use App\Models\Category;
 use Illuminate\Http\Request;
 //use Illuminate\Support\Facades\Storage;
 
@@ -121,6 +122,36 @@ class NewsController extends Controller
             return response([]);
         }
         return response(['errors'=>['Не удалось удалить новость']], 500);
+    }
+
+    public function withCategory(Request $request) {
+        //$news = Category::where('news', 'news_categories.category', '=', 'news.id');
+        //$news = NewsItem::join('news_categories', 'news.id', '=', 'news_categories.news_item')->where('category', '=', $request->categoryId)->get()->toJson();
+        $news = NewsItem::whereHas('categories', function($q) {
+            global $request;
+            $q->where('category', '=', $request->categoryId)->with(['categories', 'comments']);//->with();
+        })->get();
+        //$items = $news->to;
+        /*for($i = 0; $i < $items->count(); $i++){
+            $items[$i]['categories'] = $news[$i]->categories();
+        }*/
+        foreach($news as $item) {
+            $cats = $item->categories()->get();
+            $arr = [];
+            foreach($cats as $cat) {
+                $data = [
+                'name'=>$cat->name,
+                'id'=>$cat->id,
+                'background_color'=>$cat->background_color,
+                'font_color'=>$cat->font_color
+                ];
+                array_push($arr, $data);
+            }
+            $item['categories'] = $arr;
+            $item['comments'] = $item->comments()->count();
+        }
+        $master = !!User::hasAuthorize('Admin');
+        return response(['news'=>$news->toJson(), 'master'=>$master]);
     }
 
     public function newComment(Request $request) {

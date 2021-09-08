@@ -46,7 +46,7 @@ $title = 'Новости';
                         <div class='news-item__subtitle-wrap text-muted interactable'><strong class='news-item__subtitle text-truncate'>{{ $news_item->subtitle }}</strong></div>
                         <div class='news-item__categories text-muted text-truncate'>
                         @foreach ($news_item->categories as $category)
-                            <div class='badge news-item__category'
+                            <div class='badge category news-item__category'
                                 data-id='{{ $category->id }}'
                                 style='
                                 --background-color: {{ $category->background_color }};

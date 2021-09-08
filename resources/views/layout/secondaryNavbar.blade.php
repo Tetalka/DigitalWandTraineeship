@@ -15,7 +15,7 @@ $admin = $user && $user->hasRole('Admin');
                 @endif
             <div class='categories'>
                 @foreach ($categories as $category)
-                    <div class='badge category border' 
+                    <div class='badge category border' data-id='{{ $category->id }}'
                         style='
                         --background-color: {{ $category->background_color }};
                         --font-color: {{ $category->font_color }};'

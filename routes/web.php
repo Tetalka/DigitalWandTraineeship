@@ -43,6 +43,7 @@ Route::prefix('user')->group(function () {
 });
 
 Route::prefix('news')->group(function () {
+    Route::get('/category/{categoryId}', [NewsController::class, 'withCategory']);
     Route::post('create', [NewsController::class, 'create']);
     Route::delete('{id}', [NewsController::class, 'delete']);
     Route::post('update/{id}', [NewsController::class, 'update']);
