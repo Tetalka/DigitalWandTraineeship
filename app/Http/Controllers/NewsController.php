@@ -51,7 +51,13 @@ class NewsController extends Controller
         if($created) {
             $news_item->categories()->attach($request->categories);
             $created = $news_item->save();
-            return response(['data'=>['Новость добавлена']]);
+            return response([
+                'data'=>['Новость добавлена'], 
+                'info'=>[ 
+                    'id'=>$news_item->id,
+                    'image'=>$news_item->image
+                ]
+            ]);
         }
         return response(['errors'=>['Не удалось добавить новость']], 500);
         
@@ -100,11 +106,20 @@ class NewsController extends Controller
             }
             $categories->attach($toAdd);
         }
-        if ($image) $news_item->image = $image->getFilename();
+        if ($image) {
+            $old = $news_item->image;
+            unlink(public_path('images/'.$old));//!!!не удаляется
+            $news_item->image = $image->getFilename();
+        }
         if ($request->text) $news_item->description = $request->text;
         $updated = $news_item->save();
         if($updated) {
-            return response(['data'=>['Новость обновлена']]);
+            return response([
+                'data'=>['Новость обновлена'],
+                'info'=>[
+                    'image'=>$news_item->image//!!!не надо всегда отправлять
+                ]
+            ]);
         }
         return response(['errors'=>['Не удалось обновить новость']], 500);
     }

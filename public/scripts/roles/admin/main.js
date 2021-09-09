@@ -5,12 +5,11 @@ window.addEventListener('load', function() {
             const response = await fileAjax(url, method, newsAddForm);
             showErrors(response['message']['errors'], newsAddForm);
             showMessage(response['message']['data'], newsAddForm, 'success', 'success');
-            return response['status'];
+            return response;
     }
     const news = document.querySelector('.news');
     const newsAddWindow = document.querySelector('.news-add-window');
     newsAddWindow?.remove();
-    newsAddWindow.querySelector('[name]').value = '';
     const newsAddForm = newsAddWindow?.querySelector('form');
     const newsAddBtn = document.querySelector('.btn-news-add');
     const newsSubmitBtn = newsAddWindow?.querySelector('.btn-submit');
@@ -35,15 +34,15 @@ window.addEventListener('load', function() {
         style: 'btn-default border'
     });
 
-    function resetPreviewCategories() {
-        for (const cat of preview_categories.querySelectorAll(ni['category'])) {
+    function resetCategories(categories) {
+        for (const cat of categories.querySelectorAll(ni['category'])) {
             cat.remove();
         }
     }
     function resetPreview() {
         preview_title.textContent = '';
         preview_subtitle.textContent = '';
-        resetPreviewCategories();
+        resetCategories(preview_categories);
         preview_image.src = '';
         preview_text.textContent = '';
     }
@@ -59,7 +58,7 @@ window.addEventListener('load', function() {
         `);
     }
     function catMatch() {
-        resetPreviewCategories();
+        resetCategories(preview_categories);
         for (let cat of catpicker.val()) {
             cat = categoriesSelect[cat-1];
             const category = getCategory(cat.textContent, cat.getAttribute('data-background'), cat.getAttribute('data-color'));
@@ -106,8 +105,28 @@ window.addEventListener('load', function() {
             newsSubmitBtn.removeEventListener('click', send);
         }
         async function send() {
-            const status = await sendForm('/news/create', 'POST');
-            if(status) clearInputData(newsAddForm);
+            const response = await sendForm('/news/create', 'POST');
+            if(response['status']) {
+
+                const server = response['message']['info'];
+                let cats = [];
+                for (let cat of catpicker.val()) {
+                    cat = categoriesSelect[cat-1];
+                    cats.push(cat.textContent);
+                }
+                const info = {
+                    'id': server.id,
+                    'title': newTitle.value,
+                    'subtitle': newSubtitle.value,
+                    'categories': cats,
+                    'image': server.image,
+                    'description': newText.value,
+                    'comments': 0,
+                };
+                const item = makeItem(info, true);
+                news.prepend(item);
+                clearInputData(newsAddForm);
+            }
         }
         
         const btn = this;
@@ -129,8 +148,22 @@ window.addEventListener('load', function() {
             resetPreview();
         }
         async function send() {
-            const status = await sendForm(`/news/update/${id}`, 'POST');
-            //if(status)
+            const response = await sendForm(`/news/update/${id}`, 'POST');
+            if(response['status']) {
+                const server = response['message']['info'];
+                const item = news.querySelector(`[data-id="${id}"]`);
+                item.querySelector(ni['title']).textContent = newTitle.value;
+                item.querySelector(ni['subtitle']).textContent = newSubtitle.value;
+                const item_cats = item.querySelector(ni['categories']);
+                resetCategories(item_cats);
+                for (let cat of catpicker.val()) {
+                    cat = categoriesSelect[cat-1];
+                    cat = getCategory(cat.textContent, cat.getAttribute('data-background'), cat.getAttribute('data-color'));
+                    item_cats.appendChild(cat);
+                }
+                item.querySelector(ni['image']).src = `images/${server.image}`;
+                item.querySelector(ni['text']).textContent = newText.value;
+            }
         }
         
         newsAddBtn.remove();
@@ -173,21 +206,21 @@ window.addEventListener('load', function() {
             preview_text.textContent = text.textContent;
         }
 
-            //УДАЛЕНИЕ НОВОСТЕЙ
-            async function deleteItem() {
-                const confirm = prompt('Подтвердите удаление, введя УДАЛИТЬ');
-                if (confirm == 'УДАЛИТЬ') {
-                    const response = await ajax(`news/${id}`, 'DELETE');
-                    if (response['status']) {
-                        const alert = showMessage('Новость удалёна', null, 'danger', 'success');
-                        const div = alert.firstChild;
-                        div.classList.add('justify-content-center');
-                        alert.classList.add('h-100');
-                        div.classList.add('h-100');
-                        item.replaceWith(alert);
-                    }
+        //УДАЛЕНИЕ НОВОСТЕЙ
+        async function deleteItem() {
+            const confirm = prompt('Подтвердите удаление, введя УДАЛИТЬ');
+            if (confirm == 'УДАЛИТЬ') {
+                const response = await ajax(`news/${id}`, 'DELETE');
+                if (response['status']) {
+                    const alert = showMessage('Новость удалёна', null, 'danger', 'success');
+                    const div = alert.firstChild;
+                    div.classList.add('justify-content-center');
+                    alert.classList.add('h-100');
+                    div.classList.add('h-100');
+                    item.replaceWith(alert);
                 }
             }
+        }
 
         edit.addEventListener('click', editItem);
         delet.addEventListener('click', deleteItem);
@@ -414,6 +447,7 @@ window.addEventListener('load', function() {
             const field = obj['field'];
             highlight(categories, field, 'applied', Anim_conclude_dur);
             field.classList.remove(obj['mark']);
+            field.querySelector('.btn-discard')?.remove();
         }
     }
 
